@@ -4,7 +4,7 @@ import { ProviderConfig, ProviderImplConfig, CreateProviderFromNameFunc, CreateP
 import { createProvider, getAllProviders, createProviderFromName, getProviderCapabilities } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
-import { GetProviderCapabilitiesFunc } from "crypto-layer-ts-types/manual";
+import { GetProviderCapabilitiesFunc } from "@nmshd/rs-crypto-types/manual";
 
 describe("test provider factory methods", () => {
     const FACTORY_DB_DIR_PATH = DB_DIR_PATH + "/factory";
