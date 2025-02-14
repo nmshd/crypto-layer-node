@@ -1,5 +1,5 @@
 import { createProvider, getAllProviders } from "crypto-layer-node";
-import { type ProviderConfig, type ProviderImplConfig, type KeyPairSpec, type KeyPairHandle } from "crypto-layer-ts-types";
+import { type ProviderConfig, type ProviderImplConfig, type KeyPairSpec, type KeyPairHandle } from "@nmshd/rs-crypto-types";
 import { exit } from "process";
 
 console.log("Providers: ", getAllProviders());
