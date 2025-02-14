@@ -1,6 +1,6 @@
 import { test, expect, describe } from "@jest/globals";
 
-import { ProviderConfig, ProviderImplConfig, Provider, KeySpec, KeyHandle, KeyPairSpec } from "crypto-layer-ts-types";
+import { ProviderConfig, ProviderImplConfig, Provider, KeySpec, KeyHandle, KeyPairSpec } from "@nmshd/rs-crypto-types";
 import { createProvider, getAllProviders, createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";

@@ -53,6 +53,6 @@
   },
   "dependencies": {
     "@neon-rs/load": "^0.1.73",
-    "crypto-layer-ts-types": "https://gitpkg.vercel.app/nmshd/rust-crypto/ts-types?main&scripts.postinstall=npm%20i%20--ignore-scripts%20%26%26%20npm%20run%20build"
+    "@nmshd/rs-crypto-types": "^0.1.0"
   }
 }

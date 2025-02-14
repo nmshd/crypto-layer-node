@@ -12,7 +12,7 @@ import {
     type KeyPairSpec,
     type KeySpec,
     type DHExchange
-} from "crypto-layer-ts-types";
+} from "@nmshd/rs-crypto-types";
 import {
     createBareProvider,
     providerName,
