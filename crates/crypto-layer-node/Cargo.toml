@@ -11,7 +11,7 @@ exclude = ["index.node"]
 crate-type = ["cdylib"]
 
 [dependencies]
-crypto-layer = { version = "0.1.0", path = "../../..", features = [] }
+crypto-layer = { version = "0.1.0", git = "https://github.com/nmshd/rust-crypto.git", features = [] }
 neon = { version = "1", features = ["futures"] }
 strum = "0.26.3"
 thiserror = "2.0.3"
@@ -21,19 +21,19 @@ color-eyre = "0.6.3"
 blocking = "1.6.1"
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
-crypto-layer = { path = "../../..", features = [
+crypto-layer = { git = "https://github.com/nmshd/rust-crypto.git", features = [
     "apple-secure-enclave",
     "software",
 ] }
 
 [target.'cfg(target_os = "android")'.dependencies]
-crypto-layer = { path = "../../..", features = ["android", "software"] }
+crypto-layer = { git = "https://github.com/nmshd/rust-crypto.git", features = ["android", "software"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
-crypto-layer = { path = "../../..", features = ["software"] }
+crypto-layer = { git = "https://github.com/nmshd/rust-crypto.git", features = ["software"] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
-crypto-layer = { path = "../../..", features = ["software"] }
+crypto-layer = { git = "https://github.com/nmshd/rust-crypto.git", features = ["software"] }
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
