@@ -110,6 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -131,5 +132,5 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for p in ./dist/*.tgz ; do
-            npm publish --access public $p
+            npm publish --provenance --access public $p
           done

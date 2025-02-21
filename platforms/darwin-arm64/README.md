@@ -1,3 +1,3 @@
-# `@nmshd/darwin-arm64`
+# `@nmshd/rs-crypto-node-darwin-arm64`
 
-Prebuilt binary package for `crypto-layer-ts` on `darwin-arm64`.
+Prebuilt binary package for `rs-crypto-node` on `darwin-arm64`.
