@@ -1,5 +1,5 @@
 {
-  "name": "@nmshd/rs-crypto-node",
+  "name": "crypto-layer-node",
   "version": "0.1.0",
   "description": "crypto layer ts interface for nodejs",
   "main": "./lib/index.cjs",

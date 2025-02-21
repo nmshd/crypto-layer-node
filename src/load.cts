@@ -7,11 +7,11 @@
 
 module.exports = require("@neon-rs/load").proxy({
   platforms: {
-    "win32-x64-msvc": () => require("@nmshd/rs-crypto-node-win32-x64-msvc"),
-    "darwin-x64": () => require("@nmshd/rs-crypto-node-darwin-x64"),
-    "darwin-arm64": () => require("@nmshd/rs-crypto-node-darwin-arm64"),
-    "linux-x64-gnu": () => require("@nmshd/rs-crypto-node-linux-x64-gnu"),
-    "linux-arm64-gnu": () => require("@nmshd/rs-crypto-node-linux-arm64-gnu"),
+    "win32-x64-msvc": () => require("crypto-layer-node-win32-x64-msvc"),
+    "darwin-x64": () => require("crypto-layer-node-darwin-x64"),
+    "darwin-arm64": () => require("crypto-layer-node-darwin-arm64"),
+    "linux-x64-gnu": () => require("crypto-layer-node-linux-x64-gnu"),
+    "linux-arm64-gnu": () => require("crypto-layer-node-linux-arm64-gnu"),
   },
   debug: () => require("../index.node"),
 });
