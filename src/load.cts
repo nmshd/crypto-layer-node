@@ -5,13 +5,13 @@
 //
 //   https://www.npmjs.com/package/@neon-rs/cli
 
-module.exports = require('@neon-rs/load').proxy({
+module.exports = require("@neon-rs/load").proxy({
   platforms: {
-    'win32-x64-msvc': () => require('@nmshd/win32-x64-msvc'),
-    'darwin-x64': () => require('@nmshd/darwin-x64'),
-    'darwin-arm64': () => require('@nmshd/darwin-arm64'),
-    'linux-x64-gnu': () => require('@nmshd/linux-x64-gnu'),
-    'linux-arm64-gnu': () => require('@nmshd/linux-arm64-gnu')
+    "win32-x64-msvc": () => require("@nmshd/rs-crypto-node-win32-x64-msvc"),
+    "darwin-x64": () => require("@nmshd/rs-crypto-node-darwin-x64"),
+    "darwin-arm64": () => require("@nmshd/rs-crypto-node-darwin-arm64"),
+    "linux-x64-gnu": () => require("@nmshd/rs-crypto-node-linux-x64-gnu"),
+    "linux-arm64-gnu": () => require("@nmshd/rs-crypto-node-linux-arm64-gnu"),
   },
-  debug: () => require('../index.node')
+  debug: () => require("../index.node"),
 });

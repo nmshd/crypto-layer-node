@@ -1,5 +1,5 @@
 {
-  "name": "@nmshd/linux-arm64-gnu",
+  "name": "@nmshd/rs-crypto-node-linux-arm64-gnu",
   "description": "Prebuilt binary package for `crypto-layer-ts` on `linux-arm64-gnu`.",
   "version": "0.1.0",
   "os": [
