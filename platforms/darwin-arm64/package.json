@@ -1,5 +1,5 @@
 {
-  "name": "crypto-layer-node-darwin-arm64",
+  "name": "@nmshd/rs-crypto-node-darwin-arm64",
   "description": "Prebuilt binary package for `crypto-layer-ts` on `darwin-arm64`.",
   "version": "0.1.0",
   "os": [
