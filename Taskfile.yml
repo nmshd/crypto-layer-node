@@ -2,10 +2,16 @@ version: '3'
 
 tasks:
   bump-version:
+    preconditions:
+      - sh: '[ {{.GIT_BRANCH}} != \"main\" ]'
+        msg: 'ERROR: Not on main branch.'
     cmds:
       - npm version {{.VERSION}} --sign-git-tag
       - git push
       - git push origin $(git tag --points-at HEAD)
+    vars:
+      GIT_BRANCH:
+        sh: git rev-parse --abbrev-ref HEAD
     requires:
       vars:
         - VERSION
