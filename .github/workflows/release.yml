@@ -45,7 +45,6 @@ jobs:
 
   publish:
     name: Publish
-    if: ${{ needs.setup.outputs.publish }}
     needs: [setup, build]
     runs-on: ubuntu-latest
     permissions:
@@ -61,7 +60,7 @@ jobs:
       - name: Fetch
         uses: robinraju/release-downloader@c39a3b234af58f0cf85888573d361fb6fa281534 # v1.10
         with:
-          tag: ${{ needs.setup.outputs.tag }}
+          tag: ${{ github.ref_name }}
           fileName: "*.tgz"
           out-file-path: ./dist
       - name: Publish
