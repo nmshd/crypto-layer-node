@@ -3,7 +3,7 @@ version: '3'
 tasks:
   bump-version:
     preconditions:
-      - sh: '[ {{.GIT_BRANCH}} != \"main\" ]'
+      - sh: '[ \"{{.GIT_BRANCH}}\" = \"main\" ]'
         msg: 'ERROR: Not on main branch.'
     cmds:
       - npm version {{.VERSION}} --sign-git-tag
