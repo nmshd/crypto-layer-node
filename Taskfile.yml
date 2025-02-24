@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+  bump-version:
+    cmds:
+      - npm version {{.VERSION}} --sign-git-tag
+      - git push
+      - git push origin $(git tag --points-at HEAD)
+    requires:
+      vars:
+        - VERSION
