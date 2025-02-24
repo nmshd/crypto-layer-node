@@ -1,6 +1,7 @@
 {
   "name": "@nmshd/rs-crypto-node-linux-x64-gnu",
-  "description": "Prebuilt binary package for `crypto-layer-ts` on `linux-x64-gnu`.",
+  "description": "Prebuilt binary package for `rs-layer-ts` on `linux-x64-gnu`.",
+  "repository": "github:nmshd/crypto-layer-node",
   "version": "0.1.0",
   "os": [
     "linux"
