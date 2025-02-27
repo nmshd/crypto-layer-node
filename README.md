@@ -1,4 +1,5 @@
 # crypto-layer-node
+[![NPM Version](https://img.shields.io/npm/v/%40nmshd%2Frs-crypto-node)](https://www.npmjs.com/package/@nmshd/rs-crypto-node)
 
 > [!WARNING]
 > Currently this node plugin crashes quite ungracefully. (See [#Debugging])

@@ -62,7 +62,7 @@ pub fn wrap_provider_config<'a>(
 
     let obj = cx.empty_object();
     insert_as_js_str_into_obj!(cx, obj, config.max_security_level);
-    insert_as_js_str_into_obj!(cx, obj, config.max_security_level);
+    insert_as_js_str_into_obj!(cx, obj, config.min_security_level);
     obj.set(cx, "supported_ciphers", ciphers_js)?;
     obj.set(cx, "supported_hashes", hashes_js)?;
     obj.set(cx, "supported_asym_spec", asym_specs_js)?;
