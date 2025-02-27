@@ -28,7 +28,10 @@ describe("test key handle methods", () => {
     };
 
     test("id", async () => {
-        expect((await provider.createKey(spec)).id()).toBeTruthy();
+        const keyPair = await provider.createKey(spec);
+        const id = await keyPair.id();
+        expect(id).toBeTruthy();
+        expect(typeof id).toBe("string");
     });
 
     test("delete", async () => {
