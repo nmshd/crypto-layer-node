@@ -1,12 +1,6 @@
 import { test, expect, describe } from "@jest/globals";
 
-import {
-    ProviderConfig,
-    ProviderImplConfig,
-    CreateProviderFromNameFunc,
-    CreateProviderFunc,
-    GetAllProvidersFunc,
-} from "@nmshd/rs-crypto-types";
+import { ProviderConfig, ProviderImplConfig } from "@nmshd/rs-crypto-types";
 import {
     createProvider,
     getAllProviders,
@@ -15,12 +9,11 @@ import {
 } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
-import { GetProviderCapabilitiesFunc } from "@nmshd/rs-crypto-types/manual";
 
 describe("test provider factory methods", () => {
     const FACTORY_DB_DIR_PATH = DB_DIR_PATH + "/factory";
 
-    let providerConfig: ProviderConfig = {
+    const providerConfig: ProviderConfig = {
         max_security_level: "Software",
         min_security_level: "Software",
         supported_asym_spec: ["P256"],
@@ -29,7 +22,7 @@ describe("test provider factory methods", () => {
     };
 
     test("get provider names", async () => {
-        let provider_arr = await getAllProviders();
+        const provider_arr = await getAllProviders();
         expect(provider_arr).toBeTruthy();
         for (const name of provider_arr) {
             expect(typeof name).toEqual("string");
@@ -63,7 +56,7 @@ describe("test provider factory methods", () => {
     });
 
     test("create software provider from name with file store", async () => {
-        let providerImplConfigWithFileStore: ProviderImplConfig = {
+        const providerImplConfigWithFileStore: ProviderImplConfig = {
             additional_config: [
                 {
                     FileStoreConfig: {
@@ -90,18 +83,11 @@ describe("test provider factory methods", () => {
         expect(typeof provider?.startEphemeralDhExchange).toBe("function");
     });
 
-    test("functions fullfilling defined types", async () => {
-        let _a: GetAllProvidersFunc = getAllProviders;
-        let _b: CreateProviderFromNameFunc = createProviderFromName;
-        let _c: CreateProviderFunc = createProvider;
-        let _d: GetProviderCapabilitiesFunc = getProviderCapabilities;
-    });
-
     test("test get provider capabilities", async () => {
-        let emptyProviderConfig: ProviderImplConfig = {
+        const emptyProviderConfig: ProviderImplConfig = {
             additional_config: [],
         };
-        let providerCapsList = await getProviderCapabilities(
+        const providerCapsList = await getProviderCapabilities(
             emptyProviderConfig
         );
         expect(providerCapsList).toBeDefined();

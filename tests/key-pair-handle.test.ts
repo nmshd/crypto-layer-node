@@ -1,25 +1,18 @@
 import { test, expect, describe } from "@jest/globals";
 
 import {
-    ProviderConfig,
     ProviderImplConfig,
     Provider,
-    KeySpec,
-    KeyHandle,
     KeyPairSpec,
 } from "@nmshd/rs-crypto-types";
-import {
-    createProvider,
-    getAllProviders,
-    createProviderFromName,
-} from "../lib/index.cjs";
+import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
 
 describe("test key pair handle methods", () => {
     const KEY_HANDLE_DB_DIR_PATH = DB_DIR_PATH + "/key_pair_handle";
 
-    let providerImplConfigWithFileStore: ProviderImplConfig = {
+    const providerImplConfigWithFileStore: ProviderImplConfig = {
         additional_config: [
             { FileStoreConfig: { db_dir: KEY_HANDLE_DB_DIR_PATH } },
             { StorageConfigPass: "1234" },
@@ -28,7 +21,7 @@ describe("test key pair handle methods", () => {
 
     let provider: Provider;
     beforeAll(async () => {
-        let provider_or_null = await createProviderFromName(
+        const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             providerImplConfigWithFileStore
         );
@@ -38,7 +31,7 @@ describe("test key pair handle methods", () => {
         provider = provider_or_null;
     });
 
-    let spec: KeyPairSpec = {
+    const spec: KeyPairSpec = {
         asym_spec: "P256",
         cipher: null,
         signing_hash: "Sha2_256",

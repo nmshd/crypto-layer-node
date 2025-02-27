@@ -1,18 +1,12 @@
 import { test, expect, describe } from "@jest/globals";
 
 import {
-    ProviderConfig,
     ProviderImplConfig,
     Provider,
     KeySpec,
-    KeyHandle,
     KeyPairSpec,
 } from "@nmshd/rs-crypto-types";
-import {
-    createProvider,
-    getAllProviders,
-    createProviderFromName,
-} from "../lib/index.cjs";
+import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
 
@@ -28,7 +22,7 @@ describe("test provider methods", () => {
 
     let provider: Provider;
     beforeAll(async () => {
-        let provider_or_null = await createProviderFromName(
+        const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             providerImplConfigWithFileStore
         );
@@ -58,7 +52,7 @@ describe("test provider methods", () => {
     test("create aes gcm ephemeral key and failed load", async () => {
         let id: string;
         {
-            let spec: KeySpec = {
+            const spec: KeySpec = {
                 cipher: "AesGcm256",
                 signing_hash: "Sha2_256",
                 ephemeral: true,
@@ -75,13 +69,13 @@ describe("test provider methods", () => {
     test("create aes gcm key and load", async () => {
         let id: string;
         {
-            let spec: KeySpec = {
+            const spec: KeySpec = {
                 cipher: "AesGcm256",
                 signing_hash: "Sha2_256",
                 ephemeral: false,
             };
 
-            let key = await provider.createKey(spec);
+            const key = await provider.createKey(spec);
             id = await key.id();
         }
         const loadedKey = await provider.loadKey(id);
@@ -115,7 +109,7 @@ describe("test provider methods", () => {
     }); */
 
     test("create P256 key pair", async () => {
-        let spec: KeyPairSpec = {
+        const spec: KeyPairSpec = {
             asym_spec: "P256",
             cipher: null,
             signing_hash: "Sha2_256",
@@ -123,7 +117,7 @@ describe("test provider methods", () => {
             non_exportable: false,
         };
 
-        let keyPair = await provider.createKeyPair(spec);
+        const keyPair = await provider.createKeyPair(spec);
 
         expect(keyPair).toBeDefined();
         expect(typeof keyPair.id).toBe("function");
@@ -138,7 +132,7 @@ describe("test provider methods", () => {
     });
 
     test("create P256 key pair and load", async () => {
-        let spec: KeyPairSpec = {
+        const spec: KeyPairSpec = {
             asym_spec: "P256",
             cipher: null,
             signing_hash: "Sha2_256",
@@ -146,18 +140,18 @@ describe("test provider methods", () => {
             non_exportable: false,
         };
 
-        let keyPair = await provider.createKeyPair(spec);
+        const keyPair = await provider.createKeyPair(spec);
 
-        let id = await keyPair.id();
+        const id = await keyPair.id();
 
-        let loadedKeyPair = await provider.loadKeyPair(id);
+        const loadedKeyPair = await provider.loadKeyPair(id);
 
         expect(loadedKeyPair.id()).resolves.toEqual(id);
         expect(loadedKeyPair.spec()).resolves.toEqual(spec);
     });
 
     test("create P256 key pair, export and import public key", async () => {
-        let spec: KeyPairSpec = {
+        const spec: KeyPairSpec = {
             asym_spec: "P256",
             cipher: null,
             signing_hash: "Sha2_256",
@@ -165,15 +159,15 @@ describe("test provider methods", () => {
             non_exportable: false,
         };
 
-        let keyPair = await provider.createKeyPair(spec);
+        const keyPair = await provider.createKeyPair(spec);
 
-        let rawPublicKey = await keyPair.getPublicKey();
+        const rawPublicKey = await keyPair.getPublicKey();
         expect(rawPublicKey).toBeInstanceOf(Uint8Array);
         expect(rawPublicKey.length).toBeGreaterThan(0);
 
         expect(keyPair.extractKey()).resolves.toBeDefined();
 
-        let publicKey = await provider.importPublicKey(spec, rawPublicKey);
+        const publicKey = await provider.importPublicKey(spec, rawPublicKey);
         expect(publicKey).toBeDefined();
         expect(publicKey.spec()).resolves.toEqual(spec);
 
@@ -182,7 +176,7 @@ describe("test provider methods", () => {
     });
 
     test("create P256 key pair, export and import key pair", async () => {
-        let spec: KeyPairSpec = {
+        const spec: KeyPairSpec = {
             asym_spec: "P256",
             cipher: null,
             signing_hash: "Sha2_256",
@@ -190,17 +184,17 @@ describe("test provider methods", () => {
             non_exportable: false,
         };
 
-        let keyPair = await provider.createKeyPair(spec);
+        const keyPair = await provider.createKeyPair(spec);
 
-        let rawPublicKey = await keyPair.getPublicKey();
+        const rawPublicKey = await keyPair.getPublicKey();
         expect(rawPublicKey).toBeInstanceOf(Uint8Array);
         expect(rawPublicKey.length).toBeGreaterThan(0);
 
-        let rawPrivateKey = await keyPair.extractKey();
+        const rawPrivateKey = await keyPair.extractKey();
         expect(rawPrivateKey).toBeInstanceOf(Uint8Array);
         expect(rawPrivateKey.length).toBeGreaterThan(0);
 
-        let importedKeyPair = await provider.importKeyPair(
+        const importedKeyPair = await provider.importKeyPair(
             spec,
             rawPublicKey,
             rawPrivateKey
@@ -212,7 +206,7 @@ describe("test provider methods", () => {
     });
 
     test("create P256 key pair, export and import private key", async () => {
-        let spec: KeyPairSpec = {
+        const spec: KeyPairSpec = {
             asym_spec: "P256",
             cipher: null,
             signing_hash: "Sha2_256",
@@ -220,17 +214,17 @@ describe("test provider methods", () => {
             non_exportable: false,
         };
 
-        let keyPair = await provider.createKeyPair(spec);
+        const keyPair = await provider.createKeyPair(spec);
 
-        let rawPublicKey = await keyPair.getPublicKey();
+        const rawPublicKey = await keyPair.getPublicKey();
         expect(rawPublicKey).toBeInstanceOf(Uint8Array);
         expect(rawPublicKey.length).toBeGreaterThan(0);
 
-        let rawPrivateKey = await keyPair.extractKey();
+        const rawPrivateKey = await keyPair.extractKey();
         expect(rawPrivateKey).toBeInstanceOf(Uint8Array);
         expect(rawPrivateKey.length).toBeGreaterThan(0);
 
-        let importedKeyPair = await provider.importKeyPair(
+        const importedKeyPair = await provider.importKeyPair(
             spec,
             new Uint8Array(0),
             rawPrivateKey

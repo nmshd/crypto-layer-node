@@ -1,18 +1,7 @@
 import { test, expect, describe } from "@jest/globals";
 
-import {
-    ProviderConfig,
-    ProviderImplConfig,
-    Provider,
-    KeySpec,
-    KeyHandle,
-    KeyPairSpec,
-} from "@nmshd/rs-crypto-types";
-import {
-    createProvider,
-    getAllProviders,
-    createProviderFromName,
-} from "../lib/index.cjs";
+import { ProviderImplConfig, Provider, KeySpec } from "@nmshd/rs-crypto-types";
+import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
 
@@ -28,7 +17,7 @@ describe("test key handle methods", () => {
 
     let provider: Provider;
     beforeAll(async () => {
-        let provider_or_null = await createProviderFromName(
+        const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             providerImplConfigWithFileStore
         );
@@ -63,7 +52,7 @@ describe("test key handle methods", () => {
         const key = await provider.createKey(spec);
         const helloMsg: Uint8Array = Buffer.from("Hello World!");
 
-        let encryptedData = await key.encryptData(helloMsg);
+        const encryptedData = await key.encryptData(helloMsg);
         expect(Array.isArray(encryptedData)).toBe(true);
         expect(encryptedData.length).toEqual(2);
         expect(encryptedData[0]).toBeDefined();
