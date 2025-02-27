@@ -337,7 +337,7 @@ dependencies = [
 [[package]]
 name = "crypto-layer"
 version = "0.1.0"
-source = "git+https://github.com/nmshd/rust-crypto.git#dee2f98ea8b73ebb839056f3a9bf7212be702a01"
+source = "git+https://github.com/nmshd/rust-crypto.git#22c33a314935abf3e62a0601b908db96a9c3c220"
 dependencies = [
  "anyhow",
  "argon2",
@@ -351,7 +351,6 @@ dependencies = [
  "hmac",
  "libloading",
  "nanoid",
- "ndk-context",
  "pkcs8",
  "pollster",
  "redb",
@@ -743,12 +742,6 @@ checksum = "3ffa00dec017b5b1a8b7cf5e2c008bfda1aa7e0697ac1508b491fdf2622fb4d8"
 dependencies = [
  "rand 0.8.5",
 ]
-
-[[package]]
-name = "ndk-context"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27b02d87554356db9e9a873add8782d4ea6e3e58ea071a9adb9a2e8ddb884a8b"
 
 [[package]]
 name = "neon"

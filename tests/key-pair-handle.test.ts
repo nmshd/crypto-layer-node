@@ -49,6 +49,7 @@ describe("test key pair handle methods", () => {
     test("id", async () => {
         const keyPair = await provider.createKeyPair(spec);
         const id = await keyPair.id();
+        expect(id).toBeDefined();
         expect(id).toBeTruthy();
         expect(typeof id).toBe("string");
     });
@@ -57,13 +58,13 @@ describe("test key pair handle methods", () => {
         const keyPair = await provider.createKeyPair(spec);
         const id = await keyPair.id();
         await keyPair.delete();
-        // expect(async () => await key_pair.id()).toThrow() // TODO: Fix delete functionality.
-        expect(async () => await provider.loadKeyPair(id)).toThrow();
+        // expect(await key_pair.id()).rejects.toThrow() // TODO: Fix delete functionality.
+        expect(provider.loadKeyPair(id)).rejects.toThrow();
     });
 
     test("spec", async () => {
         const keyPair = await provider.createKeyPair(spec);
-        expect(await keyPair.spec()).toEqual(spec);
+        expect(keyPair.spec()).resolves.toEqual(spec);
     });
 
     test("getPublicKey", async () => {
@@ -87,7 +88,7 @@ describe("test key pair handle methods", () => {
         const signature = await keyPair.signData(data);
         expect(signature).toBeInstanceOf(Uint8Array);
         expect(signature.length).toBeGreaterThan(0);
-        expect(await keyPair.verifySignature(data, signature)).toBe(true);
+        expect(keyPair.verifySignature(data, signature)).resolves.toBe(true);
     });
 
     // TODO: not yet implemented for software provider.
