@@ -47,17 +47,11 @@ describe("test provider methods", () => {
 
         const key = await provider.createKey(spec);
         expect(key).toBeDefined();
-        expect(key.id).toBeDefined();
         expect(typeof key.id).toBe("function");
-        expect(key.decryptData).toBeDefined();
         expect(typeof key.decryptData).toBe("function");
-        expect(key.delete).toBeDefined();
         expect(typeof key.delete).toBe("function");
-        expect(key.encryptData).toBeDefined();
         expect(typeof key.encryptData).toBe("function");
-        expect(key.extractKey).toBeDefined();
         expect(typeof key.extractKey).toBe("function");
-        expect(key.spec).toBeDefined();
         expect(typeof key.spec).toBe("function");
     });
 
@@ -132,23 +126,14 @@ describe("test provider methods", () => {
         let keyPair = await provider.createKeyPair(spec);
 
         expect(keyPair).toBeDefined();
-        expect(keyPair.id).toBeDefined();
         expect(typeof keyPair.id).toBe("function");
-        expect(keyPair.decryptData).toBeDefined();
         expect(typeof keyPair.decryptData).toBe("function");
-        expect(keyPair.delete).toBeDefined();
         expect(typeof keyPair.delete).toBe("function");
-        expect(keyPair.encryptData).toBeDefined();
         expect(typeof keyPair.encryptData).toBe("function");
-        expect(keyPair.extractKey).toBeDefined();
         expect(typeof keyPair.extractKey).toBe("function");
-        expect(keyPair.spec).toBeDefined();
         expect(typeof keyPair.spec).toBe("function");
-        expect(keyPair.getPublicKey).toBeDefined();
         expect(typeof keyPair.getPublicKey).toBe("function");
-        expect(keyPair.signData).toBeDefined();
         expect(typeof keyPair.signData).toBe("function");
-        expect(keyPair.verifySignature).toBeDefined();
         expect(typeof keyPair.verifySignature).toBe("function");
     });
 
