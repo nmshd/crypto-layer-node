@@ -242,6 +242,19 @@ describe("test provider methods", () => {
     });
 
     test("get provider capabilities", async () => {
-        expect(provider.getCapabilities()).resolves.toBeTruthy();
+        const caps = await provider.getCapabilities();
+        expect(caps).toBeDefined();
+        expect(typeof caps?.max_security_level).toEqual("string");
+        expect(typeof caps?.min_security_level).toEqual("string");
+        expect(caps?.min_security_level).toEqual(caps?.max_security_level);
+        expect(Array.isArray(caps?.supported_asym_spec)).toBe(true);
+        expect(Array.isArray(caps?.supported_ciphers)).toBe(true);
+        expect(Array.isArray(caps?.supported_hashes)).toBe(true);
+        expect(caps?.supported_asym_spec.length).toBeGreaterThan(0);
+        expect(caps?.supported_ciphers.length).toBeGreaterThan(0);
+        expect(caps?.supported_hashes.length).toBeGreaterThan(0);
+        expect(typeof caps?.supported_asym_spec[0]).toEqual("string");
+        expect(typeof caps?.supported_ciphers[0]).toEqual("string");
+        expect(typeof caps?.supported_hashes[0]).toEqual("string");
     });
 });
