@@ -21,7 +21,9 @@ if (!["patch", "minor", "major"].includes(Bun.argv[2])) {
     process.exit(1);
 }
 
-const { stdout } = $`npm --no-git-tag-version version`.cwd(packageRootDir);
+const { stdout } = await $`npm --no-git-tag-version version ${Bun.argv[2]}`.cwd(
+    packageRootDir
+);
 const newVersion = stdout.toString();
 console.log("New version: ", newVersion);
 
