@@ -1,4 +1,5 @@
 pub(crate) mod config;
+pub(crate) mod wrap_error;
 
 use neon::prelude::*;
 
