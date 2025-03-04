@@ -21,14 +21,13 @@ if (!["patch", "minor", "major"].includes(Bun.argv[2])) {
     process.exit(1);
 }
 
-const { stdout } = await $`npm --no-git-tag-version version ${Bun.argv[2]}`.cwd(
-    packageRootDir
-);
-const newVersion = stdout.toString();
-console.log("New version: ", newVersion);
+await $`npm --no-git-tag-version version ${Bun.argv[2]}`.cwd(packageRootDir);
 
 const packageJsonFile = await Bun.file(packageJsonPath);
 const packageJsonFileParsed = await packageJsonFile.json();
+
+const newVersion = packageJsonFileParsed.version;
+console.log("New version: ", newVersion);
 
 packageJsonFileParsed.optionalDependencies[
     "@nmshd/rs-crypto-node-win32-x64-msvc"
