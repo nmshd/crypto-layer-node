@@ -7,5 +7,5 @@
     "declaration": true,
     "outDir": "lib",
   },
-  "exclude": ["lib", "example", "tests"]
+  "exclude": ["lib", "example", "tests", "scripts"]
 }
