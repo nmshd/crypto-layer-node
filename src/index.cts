@@ -44,6 +44,8 @@ import {
     specForKeyHandle,
     specForKeyPairHandle,
     extractKeyForKeyPairHandle,
+    deriveKeyFromPassword,
+    getRandom,
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -107,6 +109,13 @@ declare module "./load.cjs" {
         this: BareProvider,
         spec: KeyPairSpec
     ): Promise<BareDHExchange>;
+    function deriveKeyFromPassword(
+        this: BareProvider,
+        password: string,
+        salt: Uint8Array,
+        spec: KeyPairSpec
+    ): Promise<KeyPairHandle>;
+    function getRandom(this: BareProvider, len: number): Promise<Uint8Array>;
 
     function signData(
         this: BareKeyPairHandle,
@@ -231,6 +240,25 @@ class NodeProvider implements Provider {
 
     async getCapabilities(): Promise<ProviderConfig | undefined> {
         return await getCapabilities.call(this.provider);
+    }
+
+    async deriveKeyFromPassword(
+        password: string,
+        salt: Uint8Array,
+        spec: KeyPairSpec
+    ): Promise<KeyPairHandle> {
+        return new NodeKeyPairHandle(
+            await deriveKeyFromPassword.call(
+                this.provider,
+                password,
+                salt,
+                spec
+            )
+        );
+    }
+
+    async getRandom(len: number): Promise<Uint8Array> {
+        return await getRandom.call(this.provider, len);
     }
 }
 

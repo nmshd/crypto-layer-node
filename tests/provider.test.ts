@@ -257,4 +257,31 @@ describe("test provider methods", () => {
         expect(typeof caps?.supported_ciphers[0]).toEqual("string");
         expect(typeof caps?.supported_hashes[0]).toEqual("string");
     });
+
+    test("derive key pair from password and salt", async () => {
+        const spec: KeyPairSpec = {
+            asym_spec: "P256",
+            cipher: "XChaCha20Poly1305",
+            signing_hash: "Sha2_256",
+            ephemeral: false,
+            non_exportable: false,
+        };
+
+        const publicKey = await provider.deriveKeyFromPassword(
+            "password1234",
+            new Uint8Array([
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+            ]),
+            spec
+        );
+        expect(publicKey).toBeDefined();
+        expect(publicKey.spec).toBeDefined();
+        expect(publicKey.spec()).resolves.toEqual(spec);
+    });
+
+    test("get random", async () => {
+        const randomBytes = await provider.getRandom(256);
+        expect(randomBytes).toBeInstanceOf(Uint8Array);
+        expect(randomBytes.length).toEqual(256);
+    });
 });
