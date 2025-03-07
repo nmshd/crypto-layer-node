@@ -247,11 +247,13 @@ class NodeProvider implements Provider {
         salt: Uint8Array,
         spec: KeyPairSpec
     ): Promise<KeyPairHandle> {
-        return await deriveKeyFromPassword.call(
-            this.provider,
-            password,
-            salt,
-            spec
+        return new NodeKeyPairHandle(
+            await deriveKeyFromPassword.call(
+                this.provider,
+                password,
+                salt,
+                spec
+            )
         );
     }
 
