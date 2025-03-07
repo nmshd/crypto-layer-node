@@ -177,6 +177,11 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
         "startEphemeralDhExchange",
         crate::provider::export_start_ephemeral_dh_exchange,
     )?;
+    cx.export_function(
+        "deriveKeyFromPassword",
+        crate::provider::export_derive_key_from_password,
+    )?;
+    cx.export_function("getRandom", crate::provider::export_get_random)?;
 
     // key pair handle
     cx.export_function("signData", crate::keypairhandle::export_sign_data)?;

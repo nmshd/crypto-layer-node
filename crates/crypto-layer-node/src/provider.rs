@@ -4,6 +4,7 @@ use crate::common::{arc_or_poisoned_error_deferred, box_if_ok, spawn_promise};
 use crate::fromjs::error::unwrap_or_throw;
 use crate::fromjs::vec_from_uint_8_array;
 use crate::tojs::config::wrap_provider_config;
+use crate::tojs::uint_8_array_from_vec_u8;
 use crate::JsProvider;
 use crate::{from_wrapped_key_pair_spec, from_wrapped_key_spec};
 
@@ -269,5 +270,68 @@ pub fn export_start_ephemeral_dh_exchange(mut cx: FunctionContext) -> JsResult<J
         let dh_exchange = provider.start_ephemeral_dh_exchange(spec);
 
         deferred.settle_with(&channel, |mut cx| box_if_ok(&mut cx, dh_exchange));
+    })
+}
+
+/// Wraps `derive_key_from_password` function.
+///
+/// # Arguments
+/// * **password**: `string`
+/// * **salt**: `Uint8Array`
+/// * **spec**: `object`
+///
+/// # Returns
+/// * `object` - bare key pair handle
+///
+/// # Throws
+/// * When one of the inputs is incorrect.
+pub fn export_derive_key_from_password(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let provider_arc = (**cx.this::<JsProvider>()?).clone();
+    let password_js = cx.argument::<JsString>(0)?;
+    let password = password_js.value(&mut cx);
+    let salt_js = cx.argument::<JsUint8Array>(1)?;
+    let salt = vec_from_uint_8_array(&mut cx, salt_js);
+    let spec_js = cx.argument::<JsObject>(2)?;
+    let spec = unwrap_or_throw!(cx, from_wrapped_key_pair_spec(&mut cx, spec_js));
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let provider = arc_or_poisoned_error_deferred!(&channel, deferred, provider_arc.read());
+
+        let key_pair_handle = provider.derive_key_from_password(&password, &salt, spec);
+
+        deferred.settle_with(&channel, |mut cx| box_if_ok(&mut cx, key_pair_handle));
+    })
+}
+
+/// Wraps `get_random` function.
+///
+/// # Arguments
+/// * **len**: `number` will be converted into an usize.
+///
+/// # Returns
+/// * `Uint8Array` - Byte array of `len` length.
+///
+/// # Throws
+/// * When `len` is negative.
+pub fn export_get_random(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let provider_arc = (**cx.this::<JsProvider>()?).clone();
+    let len_js = cx.argument::<JsNumber>(0)?;
+    let len = len_js.value(&mut cx);
+    let len_trunc = len.trunc();
+
+    if len_trunc < 0.0 {
+        cx.error(format!(
+            "ERROR: Bad argument. Expected positive number got {}",
+            len_trunc
+        ))?;
+    }
+    let len_usize = len.trunc() as usize;
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let provider = arc_or_poisoned_error_deferred!(&channel, deferred, provider_arc.read());
+
+        let random = provider.get_random(len_usize);
+
+        deferred.settle_with(&channel, |mut cx| uint_8_array_from_vec_u8(&mut cx, random));
     })
 }

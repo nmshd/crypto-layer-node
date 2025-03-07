@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@neon-rs/load": "^0.1.73",
-    "@nmshd/rs-crypto-types": "^0.1.0"
+    "@nmshd/rs-crypto-types": "^0.2.1"
   },
   "optionalDependencies": {
     "@nmshd/rs-crypto-node-win32-x64-msvc": "0.1.3",
