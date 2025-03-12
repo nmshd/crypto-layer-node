@@ -12,6 +12,7 @@ import {
     type KeyPairSpec,
     type KeySpec,
     type DHExchange,
+    KDF,
 } from "@nmshd/rs-crypto-types";
 import {
     createBareProvider,
@@ -46,6 +47,7 @@ import {
     extractKeyForKeyPairHandle,
     deriveKeyFromPassword,
     getRandom,
+    deriveKeyFromBase
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -110,11 +112,15 @@ declare module "./load.cjs" {
         spec: KeyPairSpec
     ): Promise<BareDHExchange>;
     function deriveKeyFromPassword(
-        this: BareProvider,
-        password: string,
-        salt: Uint8Array,
-        spec: KeyPairSpec
+        password: string, salt: Uint8Array, algorithm: KeySpec, kdf: KDF
     ): Promise<KeyPairHandle>;
+    function deriveKeyFromBase(
+        this: BareProvider,
+        baseKey: Uint8Array,
+        keyId: number,
+        context: string,
+        spec: KeySpec,
+    ): Promise<KeyHandle>;
     function getRandom(this: BareProvider, len: number): Promise<Uint8Array>;
 
     function signData(
@@ -243,16 +249,32 @@ class NodeProvider implements Provider {
     }
 
     async deriveKeyFromPassword(
-        password: string,
-        salt: Uint8Array,
-        spec: KeyPairSpec
-    ): Promise<KeyPairHandle> {
-        return new NodeKeyPairHandle(
+        password: string, salt: Uint8Array, algorithm: KeySpec, kdf: KDF
+    ): Promise<KeyHandle> {
+        return new NodeKeyHandle(
             await deriveKeyFromPassword.call(
                 this.provider,
                 password,
                 salt,
-                spec
+                algorithm,
+                kdf
+            )
+        );
+    }
+
+    async deriveKeyFromBase(
+        baseKey: Uint8Array,
+        keyId: number,
+        context: string,
+        spec: KeySpec,
+    ): Promise<KeyHandle> {
+        return new NodeKeyHandle(
+            await deriveKeyFromBase.call(
+                this.provider,
+                baseKey,
+                keyId,
+                context,
+                spec,
             )
         );
     }
