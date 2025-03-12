@@ -37,7 +37,7 @@ runs:
         export-variables: true
         keys-case: bypass
     - name: Install Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         registry-url: ${{ env.NPM_REGISTRY }}
@@ -63,6 +63,11 @@ runs:
       uses: baptiste0928/cargo-install@v2
       with:
         crate: cross
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
+      with:
+        save-if: ${{ github.ref == 'refs/heads/master' }}
+        cache-all-crates: true
     - name: Node Version
       id: node
       shell: bash
