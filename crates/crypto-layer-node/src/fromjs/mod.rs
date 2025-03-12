@@ -1,5 +1,6 @@
 pub(crate) mod config;
 pub(crate) mod error;
+pub(crate) mod kdf;
 
 use std::any::type_name;
 use std::cmp::Eq;
@@ -9,9 +10,10 @@ use std::str::FromStr;
 
 use neon::prelude::*;
 use neon::types::buffer::TypedArray;
+use num::{cast, PrimInt};
 use tracing::error;
 
-use error::{js_result, ConversionError};
+use error::{bad_parameter, js_result, ConversionError};
 
 /// Converts a JS Array to a `Vec<String>`.
 ///
@@ -138,4 +140,22 @@ pub(crate) fn wrapped_array_to_hash_set<
     }
 
     Ok(res)
+}
+
+pub fn uint_from_js_number<'a, T: PrimInt>(
+    cx: &mut impl Context<'a>,
+    js_number: Handle<JsNumber>,
+) -> Result<T, ConversionError> {
+    let extracted_number = js_number.value(cx);
+    let truncated_number = extracted_number.trunc();
+    cast(truncated_number).ok_or_else(|| ConversionError::BadParameter)
+}
+
+pub fn uint_from_object<'a, T: PrimInt>(
+    cx: &mut impl Context<'a>,
+    object: Handle<JsObject>,
+    key: &str,
+) -> Result<T, ConversionError> {
+    let js_number = bad_parameter(object.get::<JsNumber, _, _>(cx, key))?;
+    uint_from_js_number(cx, js_number)
 }

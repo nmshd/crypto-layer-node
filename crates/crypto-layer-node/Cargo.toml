@@ -19,6 +19,7 @@ tracing = { version = "0.1.41", features = ["release_max_level_info"] }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 color-eyre = "0.6.3"
 blocking = "1.6.1"
+num = { version = "0.4.3", default-features = false }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 crypto-layer = { git = "https://github.com/nmshd/rust-crypto.git", features = [

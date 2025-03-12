@@ -37,7 +37,7 @@ runs:
         export-variables: true
         keys-case: bypass
     - name: Install Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         registry-url: ${{ env.NPM_REGISTRY }}
@@ -53,16 +53,17 @@ runs:
       working-directory: ${{ inputs.workspace }}
     - name: Install Rust
       if: ${{ inputs['use-rust'] == 'true' }}
-      uses: actions-rs/toolchain@v1
+      run: rustup toolchain install --target ${{ steps.target.outputs.target }} --profile default stable
+      shell: bash
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
       with:
-        toolchain: ${{ env.RUST_VERSION }}
-        target: ${{ steps.target.outputs.target }}
-        override: true
+        save-if: ${{ github.ref == 'refs/heads/main' }}
+        cache-all-crates: true
     - name: Install cross-rs
       if: ${{ inputs['use-cross'] == 'true' }}
-      uses: baptiste0928/cargo-install@v2
-      with:
-        crate: cross
+      run: cargo install cross --git https://github.com/cross-rs/cross
+      shell: bash
     - name: Node Version
       id: node
       shell: bash

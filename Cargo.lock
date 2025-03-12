@@ -337,12 +337,13 @@ dependencies = [
 [[package]]
 name = "crypto-layer"
 version = "0.1.0"
-source = "git+https://github.com/nmshd/rust-crypto.git#46c6e2d3b39c73860af17ec4ca68bf5eac1a1ab4"
+source = "git+https://github.com/nmshd/rust-crypto.git#1dd5e6d713d729d6fe7cbc17d18cbb370537e4ed"
 dependencies = [
  "anyhow",
  "argon2",
  "base64",
  "bincode",
+ "blake2",
  "chacha20",
  "core-foundation",
  "der",
@@ -377,6 +378,7 @@ dependencies = [
  "color-eyre",
  "crypto-layer",
  "neon",
+ "num",
  "strum",
  "thiserror 2.0.11",
  "tracing",
@@ -778,6 +780,58 @@ checksum = "77a8165726e8236064dbb45459242600304b42a5ea24ee2948e18e023bf7ba84"
 dependencies = [
  "overload",
  "winapi",
+]
+
+[[package]]
+name = "num"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35bd024e8b2ff75562e5f34e7f4905839deb4b22955ef5e73d2fea1b9813cb23"
+dependencies = [
+ "num-complex",
+ "num-integer",
+ "num-iter",
+ "num-rational",
+ "num-traits",
+]
+
+[[package]]
+name = "num-complex"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73f88a1307638156682bada9d7604135552957b7818057dcef22705b4d509495"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
+name = "num-integer"
+version = "0.1.46"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7969661fd2958a5cb096e56c8e1ad0444ac2bbcd0061bd28660485a44879858f"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
+name = "num-iter"
+version = "0.1.45"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1429034a0490724d0075ebb2bc9e875d6503c3cf69e235a8941aa757d83ef5bf"
+dependencies = [
+ "autocfg",
+ "num-integer",
+ "num-traits",
+]
+
+[[package]]
+name = "num-rational"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f83d14da390562dca69fc84082e73e548e1ad308d24accdedd2720017cb37824"
+dependencies = [
+ "num-integer",
+ "num-traits",
 ]
 
 [[package]]

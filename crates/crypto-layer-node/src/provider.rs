@@ -2,7 +2,8 @@ use neon::prelude::*;
 
 use crate::common::{arc_or_poisoned_error_deferred, box_if_ok, spawn_promise};
 use crate::fromjs::error::unwrap_or_throw;
-use crate::fromjs::vec_from_uint_8_array;
+use crate::fromjs::{uint_from_js_number, vec_from_uint_8_array};
+use crate::kdf::kdf_from_object;
 use crate::tojs::config::wrap_provider_config;
 use crate::tojs::uint_8_array_from_vec_u8;
 use crate::JsProvider;
@@ -278,10 +279,11 @@ pub fn export_start_ephemeral_dh_exchange(mut cx: FunctionContext) -> JsResult<J
 /// # Arguments
 /// * **password**: `string`
 /// * **salt**: `Uint8Array`
-/// * **spec**: `object`
+/// * **spec**: `KeySpec`
+/// * **kdf**: KDF
 ///
 /// # Returns
-/// * `object` - bare key pair handle
+/// * `object` - bare key handle
 ///
 /// # Throws
 /// * When one of the inputs is incorrect.
@@ -292,12 +294,47 @@ pub fn export_derive_key_from_password(mut cx: FunctionContext) -> JsResult<JsPr
     let salt_js = cx.argument::<JsUint8Array>(1)?;
     let salt = vec_from_uint_8_array(&mut cx, salt_js);
     let spec_js = cx.argument::<JsObject>(2)?;
-    let spec = unwrap_or_throw!(cx, from_wrapped_key_pair_spec(&mut cx, spec_js));
+    let spec = unwrap_or_throw!(cx, from_wrapped_key_spec(&mut cx, spec_js));
+    let kdf_js = cx.argument::<JsObject>(3)?;
+    let kdf = unwrap_or_throw!(cx, kdf_from_object(&mut cx, kdf_js));
 
     spawn_promise(&mut cx, move |channel, deferred| {
         let provider = arc_or_poisoned_error_deferred!(&channel, deferred, provider_arc.read());
 
-        let key_pair_handle = provider.derive_key_from_password(&password, &salt, spec);
+        let key_pair_handle = provider.derive_key_from_password(&password, &salt, spec, kdf);
+
+        deferred.settle_with(&channel, |mut cx| box_if_ok(&mut cx, key_pair_handle));
+    })
+}
+
+/// Wraps `derive_key_from_password` function.
+///
+/// # Arguments
+/// * **baseKey**: Uint8Array,
+/// * **keyId**: number,
+/// * **context**: string,
+/// * **spec**: KeySpec,
+///
+/// # Returns
+/// * `object` - bare key handle
+///
+/// # Throws
+/// * When one of the inputs is incorrect.
+pub fn export_derive_key_from_base(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let provider_arc = (**cx.this::<JsProvider>()?).clone();
+    let base_key_js = cx.argument::<JsUint8Array>(0)?;
+    let base_key = vec_from_uint_8_array(&mut cx, base_key_js);
+    let key_id_js = cx.argument::<JsNumber>(1)?;
+    let key_id: u64 = unwrap_or_throw!(cx, uint_from_js_number(&mut cx, key_id_js));
+    let context_js = cx.argument::<JsString>(2)?;
+    let context = context_js.value(&mut cx);
+    let spec_js = cx.argument::<JsObject>(3)?;
+    let spec = unwrap_or_throw!(cx, from_wrapped_key_spec(&mut cx, spec_js));
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let provider = arc_or_poisoned_error_deferred!(&channel, deferred, provider_arc.read());
+
+        let key_pair_handle = provider.derive_key_from_base(&base_key, key_id, &context, spec);
 
         deferred.settle_with(&channel, |mut cx| box_if_ok(&mut cx, key_pair_handle));
     })
