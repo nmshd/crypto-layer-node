@@ -5,6 +5,7 @@ import {
     Provider,
     KeySpec,
     KeyPairSpec,
+    KDF,
 } from "@nmshd/rs-crypto-types";
 import { createProviderFromName } from "../lib/index.cjs";
 
@@ -258,26 +259,53 @@ describe("test provider methods", () => {
         expect(typeof caps?.supported_hashes[0]).toEqual("string");
     });
 
-    test("derive key pair from password and salt", async () => {
-        const spec: KeyPairSpec = {
-            asym_spec: "P256",
-            cipher: "XChaCha20Poly1305",
+    test("derive key from password and salt", async () => {
+        const spec: KeySpec = {
+            cipher: "AesGcm256",
             signing_hash: "Sha2_256",
-            ephemeral: false,
-            non_exportable: false,
+            ephemeral: true,
         };
 
-        const publicKey = await provider.deriveKeyFromPassword(
+        const kdf: KDF = {
+            "Argon2d": {
+                memory: 19456,
+                iterations: 2,
+                parallelism: 1
+            }
+        }
+
+        const keyHandle = await provider.deriveKeyFromPassword(
             "password1234",
             new Uint8Array([
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
             ]),
-            spec
+            spec,
+            kdf
         );
-        expect(publicKey).toBeDefined();
-        expect(publicKey.spec).toBeDefined();
-        expect(publicKey.spec()).resolves.toEqual(spec);
+        expect(keyHandle).toBeDefined();
+        expect(keyHandle.spec).toBeDefined();
+        expect(keyHandle.spec()).resolves.toEqual(spec);
     });
+
+    test("derive key from base", async () => {
+        const spec: KeySpec = {
+            cipher: "AesGcm256",
+            signing_hash: "Sha2_256",
+            ephemeral: true,
+        };
+
+        const baseKeyHandle = await provider.createKey(spec);
+        const baseKey = await baseKeyHandle.extractKey();
+
+        const keyId = 12345678
+        const context = "bees fly"
+
+        const keyHandle = await provider.deriveKeyFromBase(baseKey, keyId, context, spec);
+
+        expect(keyHandle).toBeDefined();
+        expect(keyHandle.spec).toBeDefined();
+        expect(keyHandle.spec()).resolves.toEqual(spec);
+    })
 
     test("get random", async () => {
         const randomBytes = await provider.getRandom(256);
