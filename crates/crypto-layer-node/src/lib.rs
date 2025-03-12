@@ -181,6 +181,10 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
         "deriveKeyFromPassword",
         crate::provider::export_derive_key_from_password,
     )?;
+    cx.export_function(
+        "deriveKeyFromBase",
+        crate::provider::export_derive_key_from_base,
+    )?;
     cx.export_function("getRandom", crate::provider::export_get_random)?;
 
     // key pair handle
