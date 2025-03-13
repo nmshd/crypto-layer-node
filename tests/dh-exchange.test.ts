@@ -4,10 +4,20 @@ import {
     ProviderImplConfig,
     Provider,
     KeyPairSpec,
+    KeySpec,
 } from "@nmshd/rs-crypto-types";
 import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+
+function checkIfKeySpecIsDerivedFromKeyPairSpec(
+    keySpec: KeySpec,
+    keyPairSpec: KeyPairSpec,
+): void {
+    expect(keySpec.cipher).toEqual(keyPairSpec.cipher);
+    expect(keySpec.ephemeral).toEqual(keyPairSpec.ephemeral);
+    expect(keySpec.signing_hash).toEqual(keyPairSpec.signing_hash);
+}
 
 describe("test dh exchange", () => {
     const KEY_HANDLE_DB_DIR_PATH = DB_DIR_PATH + "/dh_exchange";
@@ -33,7 +43,7 @@ describe("test dh exchange", () => {
 
     const spec: KeyPairSpec = {
         asym_spec: "P256",
-        cipher: null,
+        cipher: "AesGcm256",
         signing_hash: "Sha2_256",
         ephemeral: false,
         non_exportable: false,
@@ -90,9 +100,9 @@ describe("test dh exchange", () => {
         expect(clientRx).toEqual(serverTx);
         expect(clientTx).toEqual(serverRx);
 
-        /* expect(clientRx.spec).resolves.toEqual(spec);
-        expect(clientTx.spec).resolves.toEqual(spec);
-        expect(serverRx.spec).resolves.toEqual(spec);
-        expect(serverTx.spec).resolves.toEqual(spec); */
+        checkIfKeySpecIsDerivedFromKeyPairSpec(await clientRx.spec(), spec);
+        checkIfKeySpecIsDerivedFromKeyPairSpec(await clientTx.spec(), spec);
+        checkIfKeySpecIsDerivedFromKeyPairSpec(await serverRx.spec(), spec);
+        checkIfKeySpecIsDerivedFromKeyPairSpec(await serverTx.spec(), spec);
     });
 });
