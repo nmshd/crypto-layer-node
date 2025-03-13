@@ -1,10 +1,15 @@
 {
     "words": [
+        "asym",
+        "dhexchange",
         "dotenv",
         "dryrun",
         "falti",
         "fgrep",
+        "fromjs",
         "Granual",
+        "keyhandle",
+        "keypairhandle",
         "msvc",
         "nmshd",
         "robinraju",
@@ -12,6 +17,7 @@
         "softprops",
         "Swatinem",
         "thiserror",
+        "tojs",
         "trunc"
     ]
 }

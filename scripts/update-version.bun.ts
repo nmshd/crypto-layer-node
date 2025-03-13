@@ -16,7 +16,7 @@ if (Bun.argv.length !== 3) {
 }
 if (!["patch", "minor", "major"].includes(Bun.argv[2])) {
     console.log(
-        `'${Bun.argv[2]}' is not a valid argument. Valid arguments are patch, minor, major`
+        `'${Bun.argv[2]}' is not a valid argument. Valid arguments are patch, minor, major`,
     );
     process.exit(1);
 }
@@ -43,7 +43,7 @@ packageJsonFileParsed.optionalDependencies[
 
 await Bun.write(
     packageJsonFile,
-    JSON.stringify(packageJsonFileParsed, null, 2)
+    JSON.stringify(packageJsonFileParsed, null, 2),
 );
 
 console.log("Success!");

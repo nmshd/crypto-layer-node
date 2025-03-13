@@ -38,3 +38,15 @@ pub(crate) fn uint_8_array_from_vec_u8<'a>(
         JsUint8Array::from_slice(cx, &value)
     }
 }
+
+pub fn uint_8_array_tuple_from_vec_u8_tuple<'a>(
+    cx: &mut impl Context<'a>,
+    value: (Vec<u8>, Vec<u8>),
+) -> NeonResult<Handle<'a, JsArray>> {
+    let arr = cx.empty_array();
+    let val1 = uint_8_array_from_vec_u8(cx, value.0)?;
+    arr.set(cx, 0, val1)?;
+    let val2 = uint_8_array_from_vec_u8(cx, value.1)?;
+    arr.set(cx, 1, val2)?;
+    Ok(arr)
+}

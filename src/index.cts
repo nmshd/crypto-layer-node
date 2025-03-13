@@ -3,17 +3,18 @@
 // The Rust addon.
 export { getAllProviders, getProviderCapabilities } from "./load.cjs";
 
-import {
-    type Provider,
-    type ProviderConfig,
-    type ProviderImplConfig,
-    type KeyHandle,
-    type KeyPairHandle,
-    type KeyPairSpec,
-    type KeySpec,
-    type DHExchange,
+import type {
+    Provider,
+    ProviderConfig,
+    ProviderImplConfig,
+    KeyHandle,
+    KeyPairHandle,
+    KeyPairSpec,
+    KeySpec,
+    DHExchange,
     KDF,
 } from "@nmshd/rs-crypto-types";
+
 import {
     createBareProvider,
     providerName,
@@ -40,14 +41,18 @@ import {
     getCapabilities,
     startEphemeralDhExchange,
     getPublicKeyForDHExchange,
-    addExternalFinalForDHExchange,
-    addExternalForDHExchange,
+    // addExternalFinalForDHExchange,
+    // addExternalForDHExchange,
+    deriveClientSessionKeys,
+    deriveServerSessionKeys,
+    deriveClientKeyHandles,
+    deriveServerKeyHandles,
     specForKeyHandle,
     specForKeyPairHandle,
     extractKeyForKeyPairHandle,
     deriveKeyFromPassword,
     getRandom,
-    deriveKeyFromBase
+    deriveKeyFromBase,
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -61,58 +66,61 @@ declare module "./load.cjs" {
     function getAllProviders(): Promise<string[]>;
     function createBareProvider(
         config: ProviderConfig,
-        impl_config: ProviderImplConfig
+        impl_config: ProviderImplConfig,
     ): Promise<BareProvider | undefined>;
     function createBareProviderFromName(
         name: string,
-        impl_config: ProviderImplConfig
+        impl_config: ProviderImplConfig,
     ): Promise<BareProvider | undefined>;
     function getProviderCapabilities(
-        providerImplConfig: ProviderImplConfig
+        providerImplConfig: ProviderImplConfig,
     ): Promise<[string, ProviderConfig][]>;
 
     function providerName(this: BareProvider): Promise<string>;
     function createBareKey(
         this: BareProvider,
-        spec: KeySpec
+        spec: KeySpec,
     ): Promise<BareKeyHandle>;
     function createBareKeyPair(
         this: BareProvider,
-        spec: KeyPairSpec
+        spec: KeyPairSpec,
     ): Promise<BareKeyPairHandle>;
     function loadBareKey(
         this: BareProvider,
-        id: string
+        id: string,
     ): Promise<BareKeyHandle>;
     function loadBareKeyPair(
         this: BareProvider,
-        id: string
+        id: string,
     ): Promise<BareKeyPairHandle>;
     function importBareKey(
         this: BareProvider,
         spec: KeySpec,
-        key: Uint8Array
+        key: Uint8Array,
     ): Promise<BareKeyHandle>;
     function importBareKeyPair(
         this: BareProvider,
         spec: KeyPairSpec,
         publicKey: Uint8Array,
-        privateKey: Uint8Array
+        privateKey: Uint8Array,
     ): Promise<BareKeyPairHandle>;
     function importBarePublicKey(
         this: BareProvider,
         spec: KeyPairSpec,
-        publicKey: Uint8Array
+        publicKey: Uint8Array,
     ): Promise<BareKeyPairHandle>;
     function getCapabilities(
-        this: BareProvider
+        this: BareProvider,
     ): Promise<ProviderConfig | undefined>;
     function startEphemeralDhExchange(
         this: BareProvider,
-        spec: KeyPairSpec
+        spec: KeyPairSpec,
     ): Promise<BareDHExchange>;
     function deriveKeyFromPassword(
-        password: string, salt: Uint8Array, algorithm: KeySpec, kdf: KDF
+        password: string,
+        salt: Uint8Array,
+        algorithm: KeySpec,
+        kdf: KDF,
     ): Promise<KeyPairHandle>;
     function deriveKeyFromBase(
         this: BareProvider,
@@ -125,29 +133,29 @@ declare module "./load.cjs" {
 
     function signData(
         this: BareKeyPairHandle,
-        data: Uint8Array
+        data: Uint8Array,
     ): Promise<Uint8Array>;
     function verifySignature(
         this: BareKeyPairHandle,
         data: Uint8Array,
-        signature: Uint8Array
+        signature: Uint8Array,
     ): Promise<boolean>;
     function idForKeyPair(this: BareKeyPairHandle): Promise<string>;
     function deleteForKeyPair(this: BareKeyPairHandle): Promise<undefined>;
     function getPublicKey(this: BareKeyPairHandle): Promise<Uint8Array>;
     function extractKeyForKeyPairHandle(
-        this: BareKeyPairHandle
+        this: BareKeyPairHandle,
     ): Promise<Uint8Array>;
     function encryptDataForKeyPairHandle(
         this: BareKeyPairHandle,
-        data: Uint8Array
+        data: Uint8Array,
     ): Promise<Uint8Array>;
     function decryptDataForKeyPairHandle(
         this: BareKeyPairHandle,
-        data: Uint8Array
+        data: Uint8Array,
     ): Promise<Uint8Array>;
     function specForKeyPairHandle(
-        this: BareKeyPairHandle
+        this: BareKeyPairHandle,
     ): Promise<KeyPairSpec>;
 
     function idForKeyHandle(this: BareKeyHandle): Promise<string>;
@@ -155,26 +163,38 @@ declare module "./load.cjs" {
     function extractKeyForKeyHandle(this: BareKeyHandle): Promise<Uint8Array>;
     function encryptDataForKeyHandle(
         this: BareKeyHandle,
-        data: Uint8Array
+        data: Uint8Array,
     ): Promise<[Uint8Array, Uint8Array]>;
     function decryptDataForKeyHandle(
         this: BareKeyHandle,
         data: Uint8Array,
-        iv: Uint8Array
+        iv: Uint8Array,
     ): Promise<Uint8Array>;
     function specForKeyHandle(this: BareKeyHandle): Promise<KeySpec>;
 
     function getPublicKeyForDHExchange(
-        this: BareDHExchange
+        this: BareDHExchange,
     ): Promise<Uint8Array>;
-    function addExternalForDHExchange(
+    /* function addExternalForDHExchange(
         this: BareDHExchange,
         key: Uint8Array
     ): Promise<Uint8Array>;
     function addExternalFinalForDHExchange(
         this: BareDHExchange,
         key: Uint8Array
-    ): Promise<BareKeyHandle>;
+    ): Promise<BareKeyHandle>; */
+    function deriveClientSessionKeys(
+        serverPk: Uint8Array,
+    ): Promise<[Uint8Array, Uint8Array]>;
+    function deriveServerSessionKeys(
+        clientPk: Uint8Array,
+    ): Promise<[Uint8Array, Uint8Array]>;
+    function deriveClientKeyHandles(
+        serverPk: Uint8Array,
+    ): Promise<[KeyHandle, KeyHandle]>;
+    function deriveServerKeyHandles(
+        clientPk: Uint8Array,
+    ): Promise<[KeyHandle, KeyHandle]>;
 }
 
 class NodeProvider implements Provider {
@@ -194,7 +214,7 @@ class NodeProvider implements Provider {
 
     async createKeyPair(spec: KeyPairSpec): Promise<KeyPairHandle> {
         return new NodeKeyPairHandle(
-            await createBareKeyPair.call(this.provider, spec)
+            await createBareKeyPair.call(this.provider, spec),
         );
     }
 
@@ -204,43 +224,43 @@ class NodeProvider implements Provider {
 
     async loadKeyPair(id: string): Promise<KeyPairHandle> {
         return new NodeKeyPairHandle(
-            await loadBareKeyPair.call(this.provider, id)
+            await loadBareKeyPair.call(this.provider, id),
         );
     }
 
     async importKey(spec: KeySpec, key: Uint8Array): Promise<KeyHandle> {
         return new NodeKeyHandle(
-            await importBareKey.call(this.provider, spec, key)
+            await importBareKey.call(this.provider, spec, key),
         );
     }
 
     async importKeyPair(
         spec: KeyPairSpec,
         publicKey: Uint8Array,
-        privateKey: Uint8Array
+        privateKey: Uint8Array,
     ): Promise<KeyPairHandle> {
         return new NodeKeyPairHandle(
             await importBareKeyPair.call(
                 this.provider,
                 spec,
                 publicKey,
-                privateKey
-            )
+                privateKey,
+            ),
         );
     }
 
     async importPublicKey(
         spec: KeyPairSpec,
-        publicKey: Uint8Array
+        publicKey: Uint8Array,
     ): Promise<KeyPairHandle> {
         return new NodeKeyPairHandle(
-            await importBarePublicKey.call(this.provider, spec, publicKey)
+            await importBarePublicKey.call(this.provider, spec, publicKey),
         );
     }
 
     async startEphemeralDhExchange(spec: KeyPairSpec): Promise<DHExchange> {
         return new NodeDHExchange(
-            await startEphemeralDhExchange.call(this.provider, spec)
+            await startEphemeralDhExchange.call(this.provider, spec),
         );
     }
 
@@ -249,7 +269,10 @@ class NodeProvider implements Provider {
     }
 
     async deriveKeyFromPassword(
-        password: string, salt: Uint8Array, algorithm: KeySpec, kdf: KDF
+        password: string,
+        salt: Uint8Array,
+        algorithm: KeySpec,
+        kdf: KDF,
     ): Promise<KeyHandle> {
         return new NodeKeyHandle(
             await deriveKeyFromPassword.call(
@@ -257,8 +280,8 @@ class NodeProvider implements Provider {
                 password,
                 salt,
                 algorithm,
-                kdf
-            )
+                kdf,
+            ),
         );
     }
 
@@ -275,7 +298,7 @@ class NodeProvider implements Provider {
                 keyId,
                 context,
                 spec,
-            )
+            ),
         );
     }
 
@@ -309,12 +332,12 @@ class NodeKeyHandle implements KeyHandle {
 
     async decryptData(
         encryptedData: Uint8Array,
-        iv: Uint8Array
+        iv: Uint8Array,
     ): Promise<Uint8Array> {
         return await decryptDataForKeyHandle.call(
             this.keyHandle,
             encryptedData,
-            iv
+            iv,
         );
     }
 
@@ -344,7 +367,7 @@ class NodeKeyPairHandle implements KeyPairHandle {
 
     async verifySignature(
         data: Uint8Array,
-        signature: Uint8Array
+        signature: Uint8Array,
     ): Promise<boolean> {
         return await verifySignature.call(this.keyPairHandle, data, signature);
     }
@@ -356,7 +379,7 @@ class NodeKeyPairHandle implements KeyPairHandle {
     async decryptData(encryptedData: Uint8Array): Promise<Uint8Array> {
         return await decryptDataForKeyPairHandle.call(
             this.keyPairHandle,
-            encryptedData
+            encryptedData,
         );
     }
 
@@ -383,7 +406,7 @@ class NodeDHExchange implements DHExchange {
     async getPublicKey(): Promise<Uint8Array> {
         return await getPublicKeyForDHExchange.call(this.dhExchange);
     }
-    async addExternal(externalKey: Uint8Array): Promise<Uint8Array> {
+    /* async addExternal(externalKey: Uint8Array): Promise<Uint8Array> {
         return await addExternalForDHExchange.call(
             this.dhExchange,
             externalKey
@@ -396,12 +419,40 @@ class NodeDHExchange implements DHExchange {
                 externalKey
             )
         );
+    } */
+    async deriveClientSessionKeys(
+        serverPk: Uint8Array,
+    ): Promise<[Uint8Array, Uint8Array]> {
+        return await deriveClientSessionKeys.call(this.dhExchange, serverPk);
+    }
+    async deriveServerSessionKeys(
+        clientPk: Uint8Array,
+    ): Promise<[Uint8Array, Uint8Array]> {
+        return await deriveServerSessionKeys.call(this.dhExchange, clientPk);
+    }
+    async deriveClientKeyHandles(
+        serverPk: Uint8Array,
+    ): Promise<[KeyHandle, KeyHandle]> {
+        const [rx, tx] = await deriveClientKeyHandles.call(
+            this.dhExchange,
+            serverPk,
+        );
+        return [new NodeKeyHandle(rx), new NodeKeyHandle(tx)];
+    }
+    async deriveServerKeyHandles(
+        clientPk: Uint8Array,
+    ): Promise<[KeyHandle, KeyHandle]> {
+        const [rx, tx] = await deriveServerKeyHandles.call(
+            this.dhExchange,
+            clientPk,
+        );
+        return [new NodeKeyHandle(rx), new NodeKeyHandle(tx)];
     }
 }
 
 export async function createProvider(
     config: ProviderConfig,
-    impl_config: ProviderImplConfig
+    impl_config: ProviderImplConfig,
 ): Promise<Provider | undefined> {
     const provider = await createBareProvider(config, impl_config);
     if (!provider) {
@@ -412,7 +463,7 @@ export async function createProvider(
 
 export async function createProviderFromName(
     name: string,
-    impl_config: ProviderImplConfig
+    impl_config: ProviderImplConfig,
 ): Promise<Provider | undefined> {
     const provider = await createBareProviderFromName(name, impl_config);
     if (!provider) {

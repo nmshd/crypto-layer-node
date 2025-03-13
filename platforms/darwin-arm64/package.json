@@ -1,26 +1,26 @@
 {
-  "name": "@nmshd/rs-crypto-node-darwin-arm64",
-  "description": "Prebuilt binary package for `rs-crypto-node` on `darwin-arm64`.",
-  "repository": "github:nmshd/crypto-layer-node",
-  "version": "0.3.0",
-  "os": [
-    "darwin"
-  ],
-  "cpu": [
-    "arm64"
-  ],
-  "main": "index.node",
-  "files": [
-    "index.node"
-  ],
-  "neon": {
-    "type": "binary",
-    "rust": "aarch64-apple-darwin",
-    "node": "darwin-arm64",
-    "os": "darwin",
-    "arch": "arm64",
-    "abi": null
-  },
-  "author": "j&s-soft AG",
-  "license": "MIT"
+    "name": "@nmshd/rs-crypto-node-darwin-arm64",
+    "description": "Prebuilt binary package for `rs-crypto-node` on `darwin-arm64`.",
+    "repository": "github:nmshd/crypto-layer-node",
+    "version": "0.4.0",
+    "os": [
+        "darwin"
+    ],
+    "cpu": [
+        "arm64"
+    ],
+    "main": "index.node",
+    "files": [
+        "index.node"
+    ],
+    "neon": {
+        "type": "binary",
+        "rust": "aarch64-apple-darwin",
+        "node": "darwin-arm64",
+        "os": "darwin",
+        "arch": "arm64",
+        "abi": null
+    },
+    "author": "j&s-soft AG",
+    "license": "MIT"
 }

@@ -19,7 +19,7 @@ describe("test key handle methods", () => {
     beforeAll(async () => {
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
-            providerImplConfigWithFileStore
+            providerImplConfigWithFileStore,
         );
         if (!provider_or_null) {
             throw Error("Failed initializing simple software provider.");
@@ -69,7 +69,7 @@ describe("test key handle methods", () => {
         expect(decryptedData).toBeInstanceOf(Uint8Array);
         expect(decryptedData.length).toBeGreaterThan(0);
         expect(Buffer.from(decryptedData).toString("utf8")).toEqual(
-            "Hello World!"
+            "Hello World!",
         );
     });
 
