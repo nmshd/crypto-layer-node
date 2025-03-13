@@ -7,13 +7,5 @@ export default [
     { files: ["**/*.{js,mjs,cjs,ts}"] },
     { languageOptions: { globals: globals.browser } },
     pluginJs.configs.recommended,
-    {
-        languageOptions: {
-            parserOptions: {
-                projectService: true,
-                tsconfigRootDir: import.meta.dirname,
-            },
-        },
-    },
-    ...tseslint.configs.all,
+    ...tseslint.configs.recommended,
 ];
