@@ -142,7 +142,7 @@ pub(crate) fn wrapped_array_to_hash_set<
     Ok(res)
 }
 
-pub fn uint_from_js_number<'a, T: PrimInt>(
+pub fn int_from_js_number<'a, T: PrimInt>(
     cx: &mut impl Context<'a>,
     js_number: Handle<JsNumber>,
 ) -> Result<T, ConversionError> {
@@ -151,11 +151,11 @@ pub fn uint_from_js_number<'a, T: PrimInt>(
     cast(truncated_number).ok_or_else(|| ConversionError::BadParameter)
 }
 
-pub fn uint_from_object<'a, T: PrimInt>(
+pub fn int_from_object<'a, T: PrimInt>(
     cx: &mut impl Context<'a>,
     object: Handle<JsObject>,
     key: &str,
 ) -> Result<T, ConversionError> {
     let js_number = bad_parameter(object.get::<JsNumber, _, _>(cx, key))?;
-    uint_from_js_number(cx, js_number)
+    int_from_js_number(cx, js_number)
 }

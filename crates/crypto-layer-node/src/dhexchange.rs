@@ -3,7 +3,9 @@ use neon::prelude::*;
 use crate::common::{arc_or_poisoned_error_deferred, box_if_ok, spawn_promise};
 use crate::fromjs::error::unwrap_or_throw;
 use crate::fromjs::vec_from_uint_8_array;
-use crate::tojs::uint_8_array_from_vec_u8;
+use crate::tojs::{
+    js_array_from_vec, uint_8_array_from_vec_u8, uint_8_array_tuple_from_vec_u8_tuple,
+};
 use crate::JsDhExchange;
 
 /// Wraps `get_public_key` function.
@@ -30,6 +32,7 @@ pub fn export_get_public_key(mut cx: FunctionContext) -> JsResult<JsPromise> {
     })
 }
 
+/*
 /// Wraps `add_external` function.
 ///
 /// # Arguments
@@ -78,5 +81,128 @@ pub fn export_add_external_final(mut cx: FunctionContext) -> JsResult<JsPromise>
         let key_handle = handle.add_external_final(&raw_public_key);
 
         deferred.settle_with(&channel, |mut cx| box_if_ok(&mut cx, key_handle));
+    })
+}
+ */
+
+/// Wraps `derive_client_session_keys` function.
+///
+/// # Arguments
+/// * **serverPk**: `Uint8Array`
+///
+/// # Returns
+/// * `[Uint8Array, Uint8Array]
+///
+/// # Throws
+/// * When failing to execute.
+pub fn export_derive_client_session_keys(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let handle_arc = (**cx.this::<JsDhExchange>()?).clone();
+    let server_pk_js = cx.argument::<JsUint8Array>(0)?;
+    let server_pk = vec_from_uint_8_array(&mut cx, server_pk_js);
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let mut handle = arc_or_poisoned_error_deferred!(&channel, deferred, handle_arc.write());
+
+        let client_session_keys = handle.derive_client_session_keys(&server_pk);
+
+        deferred.settle_with(&channel, |mut cx| {
+            let client_session_keys = unwrap_or_throw!(cx, client_session_keys);
+            let client_session_keys_js =
+                uint_8_array_tuple_from_vec_u8_tuple(&mut cx, client_session_keys)?;
+            Ok(client_session_keys_js)
+        });
+    })
+}
+
+/// Wraps `derive_server_session_keys` function.
+///
+/// # Arguments
+/// * **clientPk**: `Uint8Array`
+///
+/// # Returns
+/// * `[Uint8Array, Uint8Array]
+///
+/// # Throws
+/// * When failing to execute.
+pub fn export_derive_server_session_keys(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let handle_arc = (**cx.this::<JsDhExchange>()?).clone();
+    let client_pk_js = cx.argument::<JsUint8Array>(0)?;
+    let client_pk = vec_from_uint_8_array(&mut cx, client_pk_js);
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let mut handle = arc_or_poisoned_error_deferred!(&channel, deferred, handle_arc.write());
+
+        let client_session_keys = handle.derive_server_session_keys(&client_pk);
+
+        deferred.settle_with(&channel, |mut cx| {
+            let server_session_keys = unwrap_or_throw!(cx, client_session_keys);
+            let server_session_keys_js =
+                uint_8_array_tuple_from_vec_u8_tuple(&mut cx, server_session_keys)?;
+            Ok(server_session_keys_js)
+        });
+    })
+}
+
+/// Wraps `derive_client_key_handles` function.
+///
+/// # Arguments
+/// * **serverPk**: `Uint8Array`
+///
+/// # Returns
+/// * `[object, object]
+///
+/// # Throws
+/// * When failing to execute.
+pub fn export_derive_client_key_handles(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let handle_arc = (**cx.this::<JsDhExchange>()?).clone();
+    let server_pk_js = cx.argument::<JsUint8Array>(0)?;
+    let server_pk = vec_from_uint_8_array(&mut cx, server_pk_js);
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let mut handle = arc_or_poisoned_error_deferred!(&channel, deferred, handle_arc.write());
+
+        let client_session_keys = handle.derive_client_key_handles(&server_pk);
+
+        deferred.settle_with(&channel, |mut cx| {
+            let client_session_keys = unwrap_or_throw!(cx, client_session_keys);
+            let client_session_keys_js = js_array_from_vec(
+                &mut cx,
+                vec![client_session_keys.0, client_session_keys.1],
+                |cx, e| Ok(box_if_ok(cx, Ok(e))?.upcast()),
+            )?;
+            Ok(client_session_keys_js)
+        });
+    })
+}
+
+/// Wraps `derive_server_key_handles` function.
+///
+/// # Arguments
+/// * **clientPk**: `Uint8Array`
+///
+/// # Returns
+/// * `[object, object]
+///
+/// # Throws
+/// * When failing to execute.
+pub fn export_derive_server_key_handles(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let handle_arc = (**cx.this::<JsDhExchange>()?).clone();
+    let client_pk_js = cx.argument::<JsUint8Array>(0)?;
+    let client_pk = vec_from_uint_8_array(&mut cx, client_pk_js);
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let mut handle = arc_or_poisoned_error_deferred!(&channel, deferred, handle_arc.write());
+
+        let client_session_keys = handle.derive_server_key_handles(&client_pk);
+
+        deferred.settle_with(&channel, |mut cx| {
+            let server_session_keys = unwrap_or_throw!(cx, client_session_keys);
+            let server_session_keys_js = js_array_from_vec(
+                &mut cx,
+                vec![server_session_keys.0, server_session_keys.1],
+                |cx, e| Ok(box_if_ok(cx, Ok(e))?.upcast()),
+            )?;
+            Ok(server_session_keys_js)
+        });
     })
 }

@@ -2,7 +2,7 @@ use neon::prelude::*;
 
 use crate::common::{arc_or_poisoned_error_deferred, box_if_ok, spawn_promise};
 use crate::fromjs::error::unwrap_or_throw;
-use crate::fromjs::{uint_from_js_number, vec_from_uint_8_array};
+use crate::fromjs::{int_from_js_number, vec_from_uint_8_array};
 use crate::kdf::kdf_from_object;
 use crate::tojs::config::wrap_provider_config;
 use crate::tojs::uint_8_array_from_vec_u8;
@@ -325,7 +325,7 @@ pub fn export_derive_key_from_base(mut cx: FunctionContext) -> JsResult<JsPromis
     let base_key_js = cx.argument::<JsUint8Array>(0)?;
     let base_key = vec_from_uint_8_array(&mut cx, base_key_js);
     let key_id_js = cx.argument::<JsNumber>(1)?;
-    let key_id: u64 = unwrap_or_throw!(cx, uint_from_js_number(&mut cx, key_id_js));
+    let key_id: u64 = unwrap_or_throw!(cx, int_from_js_number(&mut cx, key_id_js));
     let context_js = cx.argument::<JsString>(2)?;
     let context = context_js.value(&mut cx);
     let spec_js = cx.argument::<JsObject>(3)?;

@@ -229,13 +229,29 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
         "getPublicKeyForDHExchange",
         crate::dhexchange::export_get_public_key,
     )?;
-    cx.export_function(
+    /* cx.export_function(
         "addExternalForDHExchange",
         crate::dhexchange::export_add_external,
     )?;
     cx.export_function(
         "addExternalFinalForDHExchange",
         crate::dhexchange::export_add_external_final,
+    )?; */
+    cx.export_function(
+        "deriveClientSessionKeys",
+        crate::dhexchange::export_derive_client_session_keys,
+    )?;
+    cx.export_function(
+        "deriveServerSessionKeys",
+        crate::dhexchange::export_derive_server_session_keys,
+    )?;
+    cx.export_function(
+        "deriveClientKeyHandles",
+        crate::dhexchange::export_derive_client_key_handles,
+    )?;
+    cx.export_function(
+        "deriveServerKeyHandles",
+        crate::dhexchange::export_derive_server_key_handles,
     )?;
 
     load_function_span.exit();

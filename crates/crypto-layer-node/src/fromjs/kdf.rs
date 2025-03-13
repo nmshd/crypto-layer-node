@@ -1,6 +1,6 @@
 use crate::error::js_result;
 
-use super::{error::ConversionError, uint_from_object};
+use super::{error::ConversionError, int_from_object};
 use crypto_layer::prelude::*;
 use neon::prelude::*;
 
@@ -9,9 +9,9 @@ pub fn argon_options_from_object<'a>(
     object: Handle<JsObject>,
 ) -> Result<Argon2Options, ConversionError> {
     Ok(Argon2Options {
-        memory: uint_from_object(cx, object, "memory")?,
-        iterations: uint_from_object(cx, object, "iterations")?,
-        parallelism: uint_from_object(cx, object, "parallelism")?,
+        memory: int_from_object(cx, object, "memory")?,
+        iterations: int_from_object(cx, object, "iterations")?,
+        parallelism: int_from_object(cx, object, "parallelism")?,
     })
 }
 
