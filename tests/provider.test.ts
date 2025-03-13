@@ -25,7 +25,7 @@ describe("test provider methods", () => {
     beforeAll(async () => {
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
-            providerImplConfigWithFileStore
+            providerImplConfigWithFileStore,
         );
         if (!provider_or_null) {
             throw Error("Failed initializing simple software provider.");
@@ -198,7 +198,7 @@ describe("test provider methods", () => {
         const importedKeyPair = await provider.importKeyPair(
             spec,
             rawPublicKey,
-            rawPrivateKey
+            rawPrivateKey,
         );
         expect(importedKeyPair).toBeDefined();
         expect(await importedKeyPair.extractKey()).toEqual(rawPrivateKey);
@@ -228,7 +228,7 @@ describe("test provider methods", () => {
         const importedKeyPair = await provider.importKeyPair(
             spec,
             new Uint8Array(0),
-            rawPrivateKey
+            rawPrivateKey,
         );
         expect(importedKeyPair).toBeDefined();
         expect(importedKeyPair.extractKey()).resolves.toEqual(rawPrivateKey);
@@ -238,7 +238,7 @@ describe("test provider methods", () => {
 
     test("get provider name", async () => {
         expect(provider.providerName()).resolves.toEqual(
-            SOFTWARE_PROVIDER_NAME
+            SOFTWARE_PROVIDER_NAME,
         );
     });
 
@@ -267,12 +267,12 @@ describe("test provider methods", () => {
         };
 
         const kdf: KDF = {
-            "Argon2d": {
+            Argon2d: {
                 memory: 19456,
                 iterations: 2,
-                parallelism: 1
-            }
-        }
+                parallelism: 1,
+            },
+        };
 
         const keyHandle = await provider.deriveKeyFromPassword(
             "password1234",
@@ -280,7 +280,7 @@ describe("test provider methods", () => {
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
             ]),
             spec,
-            kdf
+            kdf,
         );
         expect(keyHandle).toBeDefined();
         expect(keyHandle.spec).toBeDefined();
@@ -297,15 +297,20 @@ describe("test provider methods", () => {
         const baseKeyHandle = await provider.createKey(spec);
         const baseKey = await baseKeyHandle.extractKey();
 
-        const keyId = 12345678
-        const context = "bees fly"
+        const keyId = 12345678;
+        const context = "bees fly";
 
-        const keyHandle = await provider.deriveKeyFromBase(baseKey, keyId, context, spec);
+        const keyHandle = await provider.deriveKeyFromBase(
+            baseKey,
+            keyId,
+            context,
+            spec,
+        );
 
         expect(keyHandle).toBeDefined();
         expect(keyHandle.spec).toBeDefined();
         expect(keyHandle.spec()).resolves.toEqual(spec);
-    })
+    });
 
     test("get random", async () => {
         const randomBytes = await provider.getRandom(256);

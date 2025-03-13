@@ -1,5 +1,10 @@
 import { createProvider, getAllProviders } from "crypto-layer-node";
-import { type ProviderConfig, type ProviderImplConfig, type KeyPairSpec, type KeyPairHandle } from "@nmshd/rs-crypto-types";
+import {
+    type ProviderConfig,
+    type ProviderImplConfig,
+    type KeyPairSpec,
+    type KeyPairHandle,
+} from "@nmshd/rs-crypto-types";
 import { exit } from "process";
 
 console.log("Providers: ", getAllProviders());
@@ -9,11 +14,14 @@ let providerConfig: ProviderConfig = {
     min_security_level: "Software",
     supported_asym_spec: ["P256"],
     supported_ciphers: [],
-    supported_hashes: ["Sha2_256", "Sha2_384"]
+    supported_hashes: ["Sha2_256", "Sha2_384"],
 };
 
 let providerImplConfig: ProviderImplConfig = {
-    additional_config: [{ FileStoreConfig: { db_dir: "./db" } }, { StorageConfigPass: "1234" }]
+    additional_config: [
+        { FileStoreConfig: { db_dir: "./db" } },
+        { StorageConfigPass: "1234" },
+    ],
 };
 
 let provider = await createProvider(providerConfig, providerImplConfig);
@@ -36,7 +44,7 @@ let keypairspec: KeyPairSpec = {
 
 console.log("Creating KeyPair");
 
-let keypair = await provider.createKeyPair(keypairspec) as KeyPairHandle;
+let keypair = (await provider.createKeyPair(keypairspec)) as KeyPairHandle;
 
 console.log("Created KeyPair");
 
@@ -49,7 +57,10 @@ let signature = await keypair.signData(data);
 console.log("Signature: ", signature);
 
 try {
-    console.log("Verified: ", await keypair.verifySignature(data, signature) ? "OK" : "FAILURE");
+    console.log(
+        "Verified: ",
+        (await keypair.verifySignature(data, signature)) ? "OK" : "FAILURE",
+    );
 } catch (e) {
     console.log("Error while verifying:\n", e);
 }

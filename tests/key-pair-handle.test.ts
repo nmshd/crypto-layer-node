@@ -23,7 +23,7 @@ describe("test key pair handle methods", () => {
     beforeAll(async () => {
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
-            providerImplConfigWithFileStore
+            providerImplConfigWithFileStore,
         );
         if (!provider_or_null) {
             throw Error("Failed initializing simple software provider.");

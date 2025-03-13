@@ -40,7 +40,7 @@ describe("test provider factory methods", () => {
         };
         const provider = await createProvider(
             providerConfig,
-            providerImplConfigWithFileStore
+            providerImplConfigWithFileStore,
         );
         expect(provider).toBeDefined();
         expect(typeof provider?.createKey).toBe("function");
@@ -68,7 +68,7 @@ describe("test provider factory methods", () => {
         };
         const provider = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
-            providerImplConfigWithFileStore
+            providerImplConfigWithFileStore,
         );
         expect(provider).toBeDefined();
         expect(typeof provider?.createKey).toBe("function");
@@ -87,9 +87,8 @@ describe("test provider factory methods", () => {
         const emptyProviderConfig: ProviderImplConfig = {
             additional_config: [],
         };
-        const providerCapsList = await getProviderCapabilities(
-            emptyProviderConfig
-        );
+        const providerCapsList =
+            await getProviderCapabilities(emptyProviderConfig);
         expect(providerCapsList).toBeDefined();
         expect(Array.isArray(providerCapsList)).toEqual(true);
         expect(providerCapsList.length).toBeGreaterThanOrEqual(0);
