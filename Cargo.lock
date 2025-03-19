@@ -366,7 +366,7 @@ dependencies = [
 [[package]]
 name = "crypto-layer"
 version = "0.1.0"
-source = "git+https://github.com/nmshd/rust-crypto.git#ac32b18587da30cba121dc3a82a04ef6ea7092ce"
+source = "git+https://github.com/nmshd/rust-crypto.git#1264f4ce2642a45e185ed8cbcc828aaae2f76378"
 dependencies = [
  "anyhow",
  "argon2",
@@ -392,6 +392,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "sha3",
  "sled",
  "strum",
  "thiserror 2.0.11",
@@ -702,6 +703,15 @@ checksum = "1cfaf33c695fc6e08064efbc1f72ec937429614f25eef83af942d0e227c3a28f"
 dependencies = [
  "once_cell",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "keccak"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ecc2af9a1119c51f12a14607e783cb977bde58bc069ff0c3da1095e635d70654"
+dependencies = [
+ "cpufeatures",
 ]
 
 [[package]]
@@ -1326,6 +1336,16 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
+]
+
+[[package]]
+name = "sha3"
+version = "0.10.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75872d278a8f37ef87fa0ddbda7802605cb18344497949862c0d4dcb291eba60"
+dependencies = [
+ "digest",
+ "keccak",
 ]
 
 [[package]]

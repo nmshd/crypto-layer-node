@@ -13,6 +13,7 @@ import type {
     KeySpec,
     DHExchange,
     KDF,
+    CryptoHash,
 } from "@nmshd/rs-crypto-types";
 
 import {
@@ -53,6 +54,7 @@ import {
     deriveKeyFromPassword,
     getRandom,
     deriveKeyFromBase,
+    hash as hashFunction,
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -130,6 +132,11 @@ declare module "./load.cjs" {
         spec: KeySpec,
     ): Promise<KeyHandle>;
     function getRandom(this: BareProvider, len: number): Promise<Uint8Array>;
+    function hash(
+        this: BareProvider,
+        input: Uint8Array,
+        hash: CryptoHash,
+    ): Promise<Uint8Array>;
 
     function signData(
         this: BareKeyPairHandle,
@@ -304,6 +311,10 @@ class NodeProvider implements Provider {
 
     async getRandom(len: number): Promise<Uint8Array> {
         return await getRandom.call(this.provider, len);
+    }
+
+    async hash(input: Uint8Array, hash: CryptoHash): Promise<Uint8Array> {
+        return hashFunction.call(this.provider, input, hash);
     }
 }
 
