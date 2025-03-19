@@ -54,7 +54,7 @@ import {
     deriveKeyFromPassword,
     getRandom,
     deriveKeyFromBase,
-    hash as hashFunction,
+    hash,
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -313,8 +313,8 @@ class NodeProvider implements Provider {
         return await getRandom.call(this.provider, len);
     }
 
-    async hash(input: Uint8Array, hash: CryptoHash): Promise<Uint8Array> {
-        return hashFunction.call(this.provider, input, hash);
+    async hash(input: Uint8Array, hashAlgo: CryptoHash): Promise<Uint8Array> {
+        return hash.call(this.provider, input, hashAlgo);
     }
 }
 

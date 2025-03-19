@@ -317,4 +317,14 @@ describe("test provider methods", () => {
         expect(randomBytes).toBeInstanceOf(Uint8Array);
         expect(randomBytes.length).toEqual(256);
     });
+
+    test("hash data", async () => {
+        const data = Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8]);
+        const hash = await provider.hash(data, "Sha2_256");
+        const hash2 = await provider.hash(data, "Sha2_256");
+
+        expect(hash).toBeInstanceOf(Uint8Array);
+        expect(hash.length).toBeGreaterThan(0);
+        expect(hash).toEqual(hash2);
+    });
 });
