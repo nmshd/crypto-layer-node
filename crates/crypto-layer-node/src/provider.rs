@@ -1,8 +1,9 @@
+use crypto_layer::prelude::CryptoHash;
 use neon::prelude::*;
 
 use crate::common::{arc_or_poisoned_error_deferred, box_if_ok, spawn_promise};
 use crate::fromjs::error::unwrap_or_throw;
-use crate::fromjs::{int_from_js_number, vec_from_uint_8_array};
+use crate::fromjs::{from_wrapped_simple_enum, int_from_js_number, vec_from_uint_8_array};
 use crate::kdf::kdf_from_object;
 use crate::tojs::config::wrap_provider_config;
 use crate::tojs::uint_8_array_from_vec_u8;
@@ -370,5 +371,36 @@ pub fn export_get_random(mut cx: FunctionContext) -> JsResult<JsPromise> {
         let random = provider.get_random(len_usize);
 
         deferred.settle_with(&channel, |mut cx| uint_8_array_from_vec_u8(&mut cx, random));
+    })
+}
+
+/// Wraps `get_random` function.
+///
+/// # Arguments
+/// * **data**: `Uint8Array`
+/// * **hash**: `string` hash algorithm to use.
+///
+/// # Returns
+/// * `Uint8Array` - hash
+///
+/// # Throws
+/// * When one of the inputs is incorrect.
+pub fn export_hash(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let provider_arc = (**cx.this::<JsProvider>()?).clone();
+    let data_js = cx.argument::<JsUint8Array>(0)?;
+    let data = vec_from_uint_8_array(&mut cx, data_js);
+    let hash_algo_js = cx.argument::<JsValue>(1)?;
+    let hash_algo: CryptoHash =
+        unwrap_or_throw!(cx, from_wrapped_simple_enum(&mut cx, hash_algo_js));
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let provider = arc_or_poisoned_error_deferred!(&channel, deferred, provider_arc.read());
+
+        let hash = provider.hash(&data, hash_algo);
+
+        deferred.settle_with(&channel, |mut cx| {
+            let hash = unwrap_or_throw!(cx, hash);
+            uint_8_array_from_vec_u8(&mut cx, hash)
+        });
     })
 }
