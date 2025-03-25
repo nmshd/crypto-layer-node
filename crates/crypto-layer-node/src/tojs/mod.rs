@@ -31,7 +31,7 @@ pub(crate) fn uint_8_array_from_vec_u8<'a>(
     cx: &mut impl Context<'a>,
     value: Vec<u8>,
 ) -> NeonResult<Handle<'a, JsUint8Array>> {
-    if value.len() == 0 {
+    if value.is_empty() {
         JsUint8Array::new(cx, 0)
     } else {
         // Panics on empty slice.

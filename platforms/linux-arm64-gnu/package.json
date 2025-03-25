@@ -2,7 +2,7 @@
     "name": "@nmshd/rs-crypto-node-linux-arm64-gnu",
     "description": "Prebuilt binary package for `rs-layer-ts` on `linux-arm64-gnu`.",
     "repository": "github:nmshd/crypto-layer-node",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "os": [
         "linux"
     ],

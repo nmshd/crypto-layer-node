@@ -1,4 +1,3 @@
-use thiserror;
 use tracing::error;
 
 #[derive(thiserror::Error, Debug)]

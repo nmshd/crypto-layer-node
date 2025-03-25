@@ -41,6 +41,7 @@ import {
     createBareProviderFromName,
     getCapabilities,
     startEphemeralDhExchange,
+    dhExchangeFromKeys,
     getPublicKeyForDHExchange,
     // addExternalFinalForDHExchange,
     // addExternalForDHExchange,
@@ -116,6 +117,12 @@ declare module "./load.cjs" {
     ): Promise<ProviderConfig | undefined>;
     function startEphemeralDhExchange(
         this: BareProvider,
+        spec: KeyPairSpec,
+    ): Promise<BareDHExchange>;
+    function dhExchangeFromKeys(
+        this: BareProvider,
+        publicKey: Uint8Array,
+        privateKey: Uint8Array,
         spec: KeyPairSpec,
     ): Promise<BareDHExchange>;
     function deriveKeyFromPassword(
@@ -268,6 +275,21 @@ class NodeProvider implements Provider {
     async startEphemeralDhExchange(spec: KeyPairSpec): Promise<DHExchange> {
         return new NodeDHExchange(
             await startEphemeralDhExchange.call(this.provider, spec),
+        );
+    }
+
+    async dhExchangeFromKeys(
+        publicKey: Uint8Array,
+        privateKey: Uint8Array,
+        spec: KeyPairSpec,
+    ): Promise<DHExchange> {
+        return new NodeDHExchange(
+            await dhExchangeFromKeys.call(
+                this.provider,
+                publicKey,
+                privateKey,
+                spec,
+            ),
         );
     }
 

@@ -1,6 +1,5 @@
 use std::sync::{Arc, RwLock};
 
-use color_eyre;
 use crypto_layer::prelude::*;
 use neon::prelude::*;
 use tracing_subscriber::{
@@ -176,6 +175,10 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
     cx.export_function(
         "startEphemeralDhExchange",
         crate::provider::export_start_ephemeral_dh_exchange,
+    )?;
+    cx.export_function(
+        "dhExchangeFromKeys",
+        crate::provider::export_dh_exchange_from_keys,
     )?;
     cx.export_function(
         "deriveKeyFromPassword",

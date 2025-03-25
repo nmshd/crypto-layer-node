@@ -275,6 +275,38 @@ pub fn export_start_ephemeral_dh_exchange(mut cx: FunctionContext) -> JsResult<J
     })
 }
 
+/// Wraps `dh_exchange_from_keys` function.
+///
+/// # Arguments
+/// * **public_key**: `Uint8Array` - The public key bytes
+/// * **private_key**: `Uint8Array` - The private key bytes
+/// * **spec**: `KeyPairSpec` - The key pair specification
+///
+/// # Returns
+/// * `{}` - bare dh exchange
+///
+/// # Throws
+/// * When one of the inputs is incorrect.
+/// * When failing to create the dh exchange from the provided keys.
+pub fn export_dh_exchange_from_keys(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let provider_arc = (**cx.this::<JsProvider>()?).clone();
+    let public_key_js = cx.argument::<JsUint8Array>(0)?;
+    let public_key = vec_from_uint_8_array(&mut cx, public_key_js);
+    let private_key_js = cx.argument::<JsUint8Array>(1)?;
+    let private_key = vec_from_uint_8_array(&mut cx, private_key_js);
+    let spec_js = cx.argument::<JsObject>(2)?;
+    let spec = unwrap_or_throw!(cx, from_wrapped_key_pair_spec(&mut cx, spec_js));
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let mut provider =
+            arc_or_poisoned_error_deferred!(&channel, deferred, provider_arc.write());
+
+        let dh_exchange = provider.dh_exchange_from_keys(&public_key, &private_key, spec);
+
+        deferred.settle_with(&channel, |mut cx| box_if_ok(&mut cx, dh_exchange));
+    })
+}
+
 /// Wraps `derive_key_from_password` function.
 ///
 /// # Arguments
