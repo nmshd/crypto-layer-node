@@ -148,7 +148,7 @@ pub fn int_from_js_number<'a, T: PrimInt>(
 ) -> Result<T, ConversionError> {
     let extracted_number = js_number.value(cx);
     let truncated_number = extracted_number.trunc();
-    cast(truncated_number).ok_or_else(|| ConversionError::BadParameter)
+    cast(truncated_number).ok_or(ConversionError::BadParameter)
 }
 
 pub fn int_from_object<'a, T: PrimInt>(

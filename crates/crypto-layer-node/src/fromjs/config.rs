@@ -159,7 +159,7 @@ pub(crate) fn from_wrapped_key_pair_spec(
 
     Ok(KeyPairSpec {
         asym_spec: from_wrapped_simple_enum(cx, asymc_spec_js)?,
-        cipher: cipher,
+        cipher,
         signing_hash: from_wrapped_simple_enum(cx, signing_hash_js)?,
         ephemeral: ephemeral_js.value(cx),
         non_exportable: non_exportable_js.value(cx),
