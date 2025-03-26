@@ -65,9 +65,9 @@
     "@nmshd/rs-crypto-types": "^0.5.3"
   },
   "optionalDependencies": {
-    "@nmshd/rs-crypto-node-darwin-arm64": "0.8.3",
-    "@nmshd/rs-crypto-node-darwin-x64": "0.8.3",
-    "@nmshd/rs-crypto-node-linux-x64-gnu": "0.8.3",
-    "@nmshd/rs-crypto-node-win32-x64-msvc": "0.8.3"
+    "@nmshd/rs-crypto-node-darwin-arm64": "0.8.4",
+    "@nmshd/rs-crypto-node-darwin-x64": "0.8.4",
+    "@nmshd/rs-crypto-node-linux-x64-gnu": "0.8.4",
+    "@nmshd/rs-crypto-node-win32-x64-msvc": "0.8.4"
   }
 }
