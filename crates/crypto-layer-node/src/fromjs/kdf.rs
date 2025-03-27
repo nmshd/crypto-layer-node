@@ -24,6 +24,9 @@ pub fn kdf_from_object<'a>(
     } else if let Some(argon_options) = js_result(object.get_opt::<JsObject, _, _>(cx, "Argon2id"))?
     {
         Ok(KDF::Argon2id(argon_options_from_object(cx, argon_options)?))
+    } else if let Some(argon_options) = js_result(object.get_opt::<JsObject, _, _>(cx, "Argon2i"))?
+    {
+        Ok(KDF::Argon2i(argon_options_from_object(cx, argon_options)?))
     } else {
         Err(ConversionError::BadParameter)
     }
