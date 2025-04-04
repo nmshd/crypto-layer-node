@@ -1,6 +1,6 @@
 {
   "name": "@nmshd/rs-crypto-node",
-  "version": "0.8.7",
+  "version": "0.8.10",
   "description": "crypto layer ts interface for nodejs",
   "homepage": "https://enmeshed.eu",
   "repository": "github:nmshd/crypto-layer-node",
@@ -65,9 +65,9 @@
     "@nmshd/rs-crypto-types": "^0.5.3"
   },
   "optionalDependencies": {
-    "@nmshd/rs-crypto-node-darwin-arm64": "0.8.7",
-    "@nmshd/rs-crypto-node-darwin-x64": "0.8.7",
-    "@nmshd/rs-crypto-node-linux-x64-gnu": "0.8.7",
-    "@nmshd/rs-crypto-node-win32-x64-msvc": "0.8.7"
+    "@nmshd/rs-crypto-node-darwin-arm64": "0.8.10",
+    "@nmshd/rs-crypto-node-darwin-x64": "0.8.10",
+    "@nmshd/rs-crypto-node-linux-x64-gnu": "0.8.10",
+    "@nmshd/rs-crypto-node-win32-x64-msvc": "0.8.10"
   }
 }
