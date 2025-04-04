@@ -1,6 +1,6 @@
 {
   "name": "@nmshd/rs-crypto-node",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "crypto layer ts interface for nodejs",
   "homepage": "https://enmeshed.eu",
   "repository": "github:nmshd/crypto-layer-node",
