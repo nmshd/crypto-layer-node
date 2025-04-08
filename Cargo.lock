@@ -384,7 +384,7 @@ dependencies = [
 [[package]]
 name = "crypto-layer"
 version = "0.1.0"
-source = "git+https://github.com/nmshd/rust-crypto.git#bc25f0fdc8e403a67f42353ab00736b290327bcc"
+source = "git+https://github.com/nmshd/rust-crypto.git#9783b016c001b9d26df6c7aabc7c76d2a2708c24"
 dependencies = [
  "anyhow",
  "argon2",
