@@ -56,6 +56,7 @@ import {
     getRandom,
     deriveKeyFromBase,
     hash,
+    startDhExchangeForKeyPairHandle,
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -66,6 +67,7 @@ type BareDHExchange = object;
 // Use this declaration to assign types to the addon's exports,
 // which otherwise by default are `any`.
 declare module "./load.cjs" {
+    // root
     function getAllProviders(): Promise<string[]>;
     function createBareProvider(
         config: ProviderConfig,
@@ -79,6 +81,7 @@ declare module "./load.cjs" {
         providerImplConfig: ProviderImplConfig,
     ): Promise<[string, ProviderConfig][]>;
 
+    // Provider
     function providerName(this: BareProvider): Promise<string>;
     function createBareKey(
         this: BareProvider,
@@ -145,6 +148,7 @@ declare module "./load.cjs" {
         hash: CryptoHash,
     ): Promise<Uint8Array>;
 
+    // KeyPairHandle
     function signData(
         this: BareKeyPairHandle,
         data: Uint8Array,
@@ -171,7 +175,11 @@ declare module "./load.cjs" {
     function specForKeyPairHandle(
         this: BareKeyPairHandle,
     ): Promise<KeyPairSpec>;
+    function startDhExchangeForKeyPairHandle(
+        this: BareKeyPairHandle,
+    ): Promise<DHExchange>;
 
+    // KeyHandle
     function idForKeyHandle(this: BareKeyHandle): Promise<string>;
     function deleteForKeyHandle(this: BareKeyHandle): Promise<undefined>;
     function extractKeyForKeyHandle(this: BareKeyHandle): Promise<Uint8Array>;
@@ -186,6 +194,7 @@ declare module "./load.cjs" {
     ): Promise<Uint8Array>;
     function specForKeyHandle(this: BareKeyHandle): Promise<KeySpec>;
 
+    // DHExchange
     function getPublicKeyForDHExchange(
         this: BareDHExchange,
     ): Promise<Uint8Array>;
@@ -426,6 +435,10 @@ class NodeKeyPairHandle implements KeyPairHandle {
 
     async spec(): Promise<KeyPairSpec> {
         return await specForKeyPairHandle.call(this.keyPairHandle);
+    }
+
+    async startDhExchange(): Promise<DHExchange> {
+        return await startDhExchangeForKeyPairHandle.call(this.keyPairHandle);
     }
 }
 
