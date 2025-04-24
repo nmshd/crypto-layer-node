@@ -210,6 +210,10 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
         crate::keypairhandle::export_decrypt_data,
     )?;
     cx.export_function("specForKeyPairHandle", crate::keypairhandle::export_spec)?;
+    cx.export_function(
+        "startDhExchangeForKeyPairHandle",
+        crate::keypairhandle::export_start_dh_exchange,
+    )?;
 
     // key handle
     cx.export_function("idForKeyHandle", crate::keyhandle::export_id)?;

@@ -5,7 +5,7 @@ use crate::error::unwrap_or_throw;
 use crate::fromjs::vec_from_uint_8_array;
 use crate::tojs::config::wrap_key_pair_spec;
 use crate::tojs::uint_8_array_from_vec_u8;
-use crate::JsKeyPairHandle;
+use crate::{box_if_ok, JsKeyPairHandle};
 
 /// Wraps `sign_data` function.
 ///
@@ -234,5 +234,26 @@ pub fn export_spec(mut cx: FunctionContext) -> JsResult<JsPromise> {
         let spec = handle.spec();
 
         deferred.settle_with(&channel, move |mut cx| wrap_key_pair_spec(&mut cx, spec));
+    })
+}
+
+/// Wraps `start_dh_exchange` function.
+///
+/// # Arguments
+///
+/// # Returns
+/// * `object` - bare dh exchange
+///
+/// # Throws
+/// * When failing to start the dh exchange.
+pub fn export_start_dh_exchange(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let handle_arc = (**cx.this::<JsKeyPairHandle>()?).clone();
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let handle = arc_or_poisoned_error_deferred!(&channel, deferred, handle_arc.read());
+
+        let dh_exchange = handle.start_dh_exchange();
+
+        deferred.settle_with(&channel, |mut cx| box_if_ok(&mut cx, dh_exchange));
     })
 }

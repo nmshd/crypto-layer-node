@@ -7,6 +7,7 @@ import {
     KeyPairSpec,
     KDF,
 } from "@nmshd/rs-crypto-types";
+
 import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
@@ -232,7 +233,7 @@ describe("test provider methods", () => {
         );
         expect(importedKeyPair).toBeDefined();
         expect(importedKeyPair.extractKey()).resolves.toEqual(rawPrivateKey);
-        //expect(await importedKeyPair.getPublicKey()).toEqual(rawPublicKey); // TODO: Undefined behaviour.
+        //expect(await importedKeyPair.getPublicKey()).toEqual(rawPublicKey); // TODO: Undefined behavior.
         expect(importedKeyPair.spec()).resolves.toEqual(spec);
     });
 

@@ -95,4 +95,43 @@ describe("test key pair handle methods", () => {
 
         expect(decrypted_data).toEqual(hello_msg);
     }); */
+
+    // TODO: not implemented for software provider. DEPRECATED
+    /* test("startDhExchange", async () => {
+        const [clientKeyPairHandle, serverKeyPairHandle] = await Promise.all([
+            provider.createKeyPair(spec),
+            provider.createKeyPair(spec),
+        ]);
+
+        assertKeyPairHandle(clientKeyPairHandle);
+        assertKeyPairHandle(serverKeyPairHandle);
+
+        const [clientDhExchange, serverDhExchange] = await Promise.all([
+            clientKeyPairHandle.startDhExchange(),
+            serverKeyPairHandle.startDhExchange(),
+        ]);
+
+        assertDHExchange(clientDhExchange);
+        assertDHExchange(serverDhExchange);
+
+        const [clientPublicKey, serverPublicKey] = await Promise.all([
+            clientDhExchange.getPublicKey(),
+            serverDhExchange.getPublicKey(),
+        ]);
+
+        expect(Array.isArray(clientPublicKey)).toBe(true);
+        expect(Array.isArray(serverPublicKey)).toBe(true);
+
+        const [[clientRx, clientTx], [serverRx, serverTx]] = await Promise.all([
+            clientDhExchange.deriveClientSessionKeys(serverPublicKey),
+            serverDhExchange.deriveServerSessionKeys(clientPublicKey),
+        ]);
+
+        Array.isArray(clientPublicKey);
+
+        expect(clientRx).toBeDefined();
+        expect(clientRx).toEqual(serverTx);
+        expect(clientTx).toBeDefined();
+        expect(clientTx).toEqual(serverRx);
+    }); */
 });
