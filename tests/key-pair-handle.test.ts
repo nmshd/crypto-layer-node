@@ -8,10 +8,6 @@ import {
 import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
-import {
-    assertDHExchange,
-    assertKeyPairHandle,
-} from "@nmshd/rs-crypto-types/checks";
 
 describe("test key pair handle methods", () => {
     const KEY_HANDLE_DB_DIR_PATH = DB_DIR_PATH + "/key_pair_handle";
@@ -100,7 +96,8 @@ describe("test key pair handle methods", () => {
         expect(decrypted_data).toEqual(hello_msg);
     }); */
 
-    test("startDhExchange", async () => {
+    // TODO: not implemented for software provider. DEPRECATED
+    /* test("startDhExchange", async () => {
         const [clientKeyPairHandle, serverKeyPairHandle] = await Promise.all([
             provider.createKeyPair(spec),
             provider.createKeyPair(spec),
@@ -136,5 +133,5 @@ describe("test key pair handle methods", () => {
         expect(clientRx).toEqual(serverTx);
         expect(clientTx).toBeDefined();
         expect(clientTx).toEqual(serverRx);
-    });
+    }); */
 });

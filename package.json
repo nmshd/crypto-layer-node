@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@neon-rs/load": "^0.1.73",
-    "@nmshd/rs-crypto-types": "^0.6.0"
+    "@nmshd/rs-crypto-types": "^0.6.1"
   },
   "optionalDependencies": {
     "@nmshd/rs-crypto-node-darwin-arm64": "0.8.12",
