@@ -65,12 +65,14 @@ pub fn export_delete(mut cx: FunctionContext) -> JsResult<JsPromise> {
 pub fn export_encrypt_data(mut cx: FunctionContext) -> JsResult<JsPromise> {
     let handle_arc = (**cx.this::<JsKeyHandle>()?).clone();
     let data_js = cx.argument::<JsUint8Array>(0)?;
-    let data = vec_from_uint_8_array(&mut cx, data_js);
+    let data = vec_from_uint_8_array(&mut cx, data_js);    
+    let iv_js = cx.argument::<JsUint8Array>(1)?;
+    let iv = vec_from_uint_8_array(&mut cx, iv_js);
 
     spawn_promise(&mut cx, move |channel, deferred| {
         let handle = arc_or_poisoned_error_deferred!(&channel, deferred, handle_arc.read());
 
-        let result = handle.encrypt_data(&data);
+        let result = handle.encrypt_data(&data, &iv);
 
         deferred.settle_with(&channel, |mut cx| {
             let (encrypted_data, iv) = unwrap_or_throw!(cx, result);

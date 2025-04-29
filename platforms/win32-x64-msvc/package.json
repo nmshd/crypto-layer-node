@@ -2,7 +2,7 @@
     "name": "@nmshd/rs-crypto-node-win32-x64-msvc",
     "description": "Prebuilt binary package for `rs-layer-ts` on `win32-x64-msvc`.",
     "repository": "github:nmshd/crypto-layer-node",
-    "version": "0.9.0",
+    "version": "0.10.0",
     "os": [
         "win32"
     ],
