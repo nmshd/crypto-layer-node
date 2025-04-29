@@ -167,6 +167,7 @@ declare module "./load.cjs" {
     function encryptDataForKeyPairHandle(
         this: BareKeyPairHandle,
         data: Uint8Array,
+        iv: Uint8Array,
     ): Promise<Uint8Array>;
     function decryptDataForKeyPairHandle(
         this: BareKeyPairHandle,
@@ -186,6 +187,7 @@ declare module "./load.cjs" {
     function encryptDataForKeyHandle(
         this: BareKeyHandle,
         data: Uint8Array,
+        iv: Uint8Array,
     ): Promise<[Uint8Array, Uint8Array]>;
     function decryptDataForKeyHandle(
         this: BareKeyHandle,
@@ -368,8 +370,8 @@ class NodeKeyHandle implements KeyHandle {
         return await extractKeyForKeyHandle.call(this.keyHandle);
     }
 
-    async encryptData(data: Uint8Array): Promise<[Uint8Array, Uint8Array]> {
-        return await encryptDataForKeyHandle.call(this.keyHandle, data);
+    async encryptData(data: Uint8Array, iv: Uint8Array): Promise<[Uint8Array, Uint8Array]> {
+        return await encryptDataForKeyHandle.call(this.keyHandle, data, iv);
     }
 
     async decryptData(
@@ -414,8 +416,8 @@ class NodeKeyPairHandle implements KeyPairHandle {
         return await verifySignature.call(this.keyPairHandle, data, signature);
     }
 
-    async encryptData(data: Uint8Array): Promise<Uint8Array> {
-        return await encryptDataForKeyPairHandle.call(this.keyPairHandle, data);
+    async encryptData(data: Uint8Array, iv: Uint8Array): Promise<Uint8Array> {
+        return await encryptDataForKeyPairHandle.call(this.keyPairHandle, data, iv);
     }
 
     async decryptData(encryptedData: Uint8Array): Promise<Uint8Array> {
