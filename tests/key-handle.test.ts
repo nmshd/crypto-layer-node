@@ -49,10 +49,13 @@ describe("test key handle methods", () => {
     });
 
     test("encrypt and decrypt data", async () => {
-        const key = await provider.createKey(spec);
+        const [key, nonce] = await Promise.all([
+            provider.createKey(spec),
+            provider.getRandom(12),
+        ]);
         const helloMsg: Uint8Array = Buffer.from("Hello World!");
 
-        const encryptedData = await key.encryptData(helloMsg);
+        const encryptedData = await key.encryptData(helloMsg, nonce);
         expect(Array.isArray(encryptedData)).toBe(true);
         expect(encryptedData.length).toEqual(2);
         expect(encryptedData[0]).toBeDefined();
