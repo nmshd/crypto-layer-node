@@ -226,11 +226,17 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
         "encryptDataForKeyHandle",
         crate::keyhandle::export_encrypt_data,
     )?;
+    cx.export_function("encryptForKeyHandle", crate::keyhandle::export_encrypt)?;
+    cx.export_function(
+        "encryptWithIvForKeyHandle",
+        crate::keyhandle::export_encrypt_with_iv,
+    )?;
     cx.export_function(
         "decryptDataForKeyHandle",
         crate::keyhandle::export_decrypt_data,
     )?;
     cx.export_function("specForKeyHandle", crate::keyhandle::export_spec)?;
+    cx.export_function("deriveKeyForKeyHandle", crate::keyhandle::export_derive_key)?;
 
     // dh exchange
     cx.export_function(
