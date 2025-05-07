@@ -57,6 +57,9 @@ import {
     deriveKeyFromBase,
     hash,
     startDhExchangeForKeyPairHandle,
+    deriveKeyForKeyHandle,
+    encryptForKeyHandle,
+    encryptWithIvForKeyHandle,
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -189,12 +192,25 @@ declare module "./load.cjs" {
         data: Uint8Array,
         iv: Uint8Array,
     ): Promise<[Uint8Array, Uint8Array]>;
+    function encryptForKeyHandle(
+        this: BareKeyHandle,
+        data: Uint8Array,
+    ): Promise<[Uint8Array, Uint8Array]>;
+    function encryptWithIvForKeyHandle(
+        this: BareKeyHandle,
+        data: Uint8Array,
+        iv: Uint8Array,
+    ): Promise<Uint8Array>;
     function decryptDataForKeyHandle(
         this: BareKeyHandle,
         data: Uint8Array,
         iv: Uint8Array,
     ): Promise<Uint8Array>;
     function specForKeyHandle(this: BareKeyHandle): Promise<KeySpec>;
+    function deriveKeyForKeyHandle(
+        this: BareKeyHandle,
+        nonce: Uint8Array,
+    ): Promise<KeyHandle>;
 
     // DHExchange
     function getPublicKeyForDHExchange(
@@ -370,8 +386,19 @@ class NodeKeyHandle implements KeyHandle {
         return await extractKeyForKeyHandle.call(this.keyHandle);
     }
 
-    async encryptData(data: Uint8Array, iv: Uint8Array): Promise<[Uint8Array, Uint8Array]> {
+    async encryptData(
+        data: Uint8Array,
+        iv: Uint8Array,
+    ): Promise<[Uint8Array, Uint8Array]> {
         return await encryptDataForKeyHandle.call(this.keyHandle, data, iv);
+    }
+
+    async encrypt(data: Uint8Array): Promise<[Uint8Array, Uint8Array]> {
+        return await encryptForKeyHandle.call(this.keyHandle, data);
+    }
+
+    async encryptWithIv(data: Uint8Array, iv: Uint8Array): Promise<Uint8Array> {
+        return await encryptWithIvForKeyHandle.call(this.keyHandle, data, iv);
     }
 
     async decryptData(
@@ -387,6 +414,12 @@ class NodeKeyHandle implements KeyHandle {
 
     async spec(): Promise<KeySpec> {
         return await specForKeyHandle.call(this.keyHandle);
+    }
+
+    async deriveKey(nonce: Uint8Array): Promise<KeyHandle> {
+        return new NodeKeyHandle(
+            await deriveKeyForKeyHandle.call(this.keyHandle, nonce),
+        );
     }
 }
 
@@ -417,7 +450,11 @@ class NodeKeyPairHandle implements KeyPairHandle {
     }
 
     async encryptData(data: Uint8Array, iv: Uint8Array): Promise<Uint8Array> {
-        return await encryptDataForKeyPairHandle.call(this.keyPairHandle, data, iv);
+        return await encryptDataForKeyPairHandle.call(
+            this.keyPairHandle,
+            data,
+            iv,
+        );
     }
 
     async decryptData(encryptedData: Uint8Array): Promise<Uint8Array> {
