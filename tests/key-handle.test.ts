@@ -4,6 +4,7 @@ import { ProviderImplConfig, Provider, KeySpec } from "@nmshd/rs-crypto-types";
 import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+import { assertKeyHandle } from "@nmshd/rs-crypto-types/checks";
 
 describe("test key handle methods", () => {
     const KEY_HANDLE_DB_DIR_PATH = DB_DIR_PATH + "/key_handle";
@@ -48,7 +49,7 @@ describe("test key handle methods", () => {
         expect(provider.loadKey(id)).rejects.toThrow();
     });
 
-    test("encrypt and decrypt data", async () => {
+    test("encrypt data and decrypt data", async () => {
         const [key, nonce] = await Promise.all([
             provider.createKey(spec),
             provider.getRandom(12),
@@ -76,8 +77,70 @@ describe("test key handle methods", () => {
         );
     });
 
+    test("encrypt", async () => {
+        const [key] = await Promise.all([provider.createKey(spec)]);
+        const helloMsg: Uint8Array = Buffer.from("Hello World!");
+
+        const encryptedData = await key.encrypt(helloMsg);
+        expect(Array.isArray(encryptedData)).toBe(true);
+        expect(encryptedData.length).toEqual(2);
+        expect(encryptedData[0]).toBeDefined();
+        expect(encryptedData[0]).toBeInstanceOf(Uint8Array);
+        expect(encryptedData[1]).toBeDefined();
+        expect(encryptedData[1]).toBeInstanceOf(Uint8Array);
+
+        const decryptedData = await key.decryptData(...encryptedData);
+
+        expect(decryptedData).toBeDefined();
+        expect(decryptedData).toBeInstanceOf(Uint8Array);
+        expect(decryptedData.length).toBeGreaterThan(0);
+        expect(Buffer.from(decryptedData).toString("utf8")).toEqual(
+            "Hello World!",
+        );
+    });
+
+    test("encrypt with iv", async () => {
+        const [key, nonce] = await Promise.all([
+            provider.createKey(spec),
+            provider.getRandom(12),
+        ]);
+        const helloMsg: Uint8Array = Buffer.from("Hello World!");
+
+        const cipherText = await key.encryptWithIv(helloMsg, nonce);
+        expect(cipherText).toBeDefined();
+        expect(cipherText).toBeInstanceOf(Uint8Array);
+
+        const decryptedData = await key.decryptData(cipherText, nonce);
+
+        expect(decryptedData).toBeDefined();
+        expect(decryptedData).toBeInstanceOf(Uint8Array);
+        expect(decryptedData.length).toBeGreaterThan(0);
+        expect(Buffer.from(decryptedData).toString("utf8")).toEqual(
+            "Hello World!",
+        );
+    });
+
     test("spec", async () => {
         const key = await provider.createKey(spec);
         expect(key.spec()).resolves.toEqual(spec);
+    });
+
+    test("derive key", async () => {
+        const key = await provider.createKey(spec);
+        const nonce = Uint8Array.from("Hello World!");
+
+        const payload = Uint8Array.from("PAYLOAD");
+
+        const derived = await key.deriveKey(nonce);
+
+        assertKeyHandle(derived);
+
+        const cipher = await derived.encrypt(payload);
+
+        const derived2 = await key.deriveKey(nonce);
+
+        const decrypted = derived2.decryptData(...cipher);
+
+        expect(decrypted).resolves.toEqual(payload);
     });
 });
