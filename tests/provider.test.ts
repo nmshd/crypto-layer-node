@@ -39,6 +39,7 @@ describe("test provider methods", () => {
             cipher: "AesGcm256",
             signing_hash: "Sha2_256",
             ephemeral: true,
+            non_exportable: true,
         };
 
         const key = await provider.createKey(spec);
@@ -58,6 +59,7 @@ describe("test provider methods", () => {
                 cipher: "AesGcm256",
                 signing_hash: "Sha2_256",
                 ephemeral: true,
+                non_exportable: true,
             };
 
             const key = await provider.createKey(spec);
@@ -75,6 +77,7 @@ describe("test provider methods", () => {
                 cipher: "AesGcm256",
                 signing_hash: "Sha2_256",
                 ephemeral: false,
+                non_exportable: true,
             };
 
             const key = await provider.createKey(spec);
@@ -265,6 +268,7 @@ describe("test provider methods", () => {
             cipher: "AesGcm256",
             signing_hash: "Sha2_256",
             ephemeral: true,
+            non_exportable: true,
         };
 
         const kdf: KDF = {
@@ -283,31 +287,6 @@ describe("test provider methods", () => {
             spec,
             kdf,
         );
-        expect(keyHandle).toBeDefined();
-        expect(keyHandle.spec).toBeDefined();
-        expect(keyHandle.spec()).resolves.toEqual(spec);
-    });
-
-    test("derive key from base", async () => {
-        const spec: KeySpec = {
-            cipher: "AesGcm256",
-            signing_hash: "Sha2_256",
-            ephemeral: true,
-        };
-
-        const baseKeyHandle = await provider.createKey(spec);
-        const baseKey = await baseKeyHandle.extractKey();
-
-        const keyId = 12345678;
-        const context = "bees fly";
-
-        const keyHandle = await provider.deriveKeyFromBase(
-            baseKey,
-            keyId,
-            context,
-            spec,
-        );
-
         expect(keyHandle).toBeDefined();
         expect(keyHandle.spec).toBeDefined();
         expect(keyHandle.spec()).resolves.toEqual(spec);

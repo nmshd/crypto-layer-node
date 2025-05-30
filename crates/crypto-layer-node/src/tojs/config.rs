@@ -77,6 +77,8 @@ pub fn wrap_key_spec<'a>(cx: &mut impl Context<'a>, spec: KeySpec) -> JsResult<'
     insert_as_js_str_into_obj!(cx, obj, spec.signing_hash);
     let ephemeral_js = cx.boolean(spec.ephemeral);
     obj.set(cx, "ephemeral", ephemeral_js)?;
+    let non_exportable_js = cx.boolean(spec.non_exportable);
+    obj.set(cx, "non_exportable", non_exportable_js)?;
 
     Ok(obj)
 }
