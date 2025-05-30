@@ -142,5 +142,15 @@ describe("test key handle methods", () => {
         const decrypted = derived2.decryptData(...cipher);
 
         expect(decrypted).resolves.toEqual(payload);
+        expect(derived.spec()).resolves.toEqual({
+            ...(await key.spec()),
+            ephemeral: true,
+        });
+        expect(derived2.spec()).resolves.toEqual({
+            ...(await key.spec()),
+            ephemeral: true,
+        });
+        expect(typeof (await derived.spec())).toEqual("object");
+        expect(typeof (await derived2.spec())).toEqual("object");
     });
 });
