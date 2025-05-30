@@ -32,6 +32,7 @@ describe("test key handle methods", () => {
         cipher: "AesGcm256",
         signing_hash: "Sha2_256",
         ephemeral: false,
+        non_exportable: true,
     };
 
     test("id", async () => {
@@ -142,5 +143,20 @@ describe("test key handle methods", () => {
         const decrypted = derived2.decryptData(...cipher);
 
         expect(decrypted).resolves.toEqual(payload);
+        expect(derived.spec()).resolves.toEqual({
+            ...(await key.spec()),
+            ephemeral: true,
+        });
+        expect(derived2.spec()).resolves.toEqual({
+            ...(await key.spec()),
+            ephemeral: true,
+        });
+        expect(typeof (await derived.spec())).toEqual("object");
+        expect(typeof (await derived2.spec())).toEqual("object");
+    });
+
+    test("extraction of non exportable key handle fails", async () => {
+        const key = await provider.createKey(spec);
+        expect(key.extractKey()).rejects.toThrow();
     });
 });

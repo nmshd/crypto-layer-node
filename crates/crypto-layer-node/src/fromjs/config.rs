@@ -131,11 +131,13 @@ pub(crate) fn from_wrapped_key_spec(
     let cipher_js = js_result(wrapped.get(cx, "cipher"))?;
     let signing_hash_js = js_result(wrapped.get(cx, "signing_hash"))?;
     let ephemeral_js = js_result(wrapped.get::<JsBoolean, _, _>(cx, "ephemeral"))?;
+    let non_exportable_js = js_result(wrapped.get::<JsBoolean, _, _>(cx, "non_exportable"))?;
 
     Ok(KeySpec {
         cipher: from_wrapped_simple_enum(cx, cipher_js)?,
         signing_hash: from_wrapped_simple_enum(cx, signing_hash_js)?,
         ephemeral: ephemeral_js.value(cx),
+        non_exportable: non_exportable_js.value(cx),
     })
 }
 
