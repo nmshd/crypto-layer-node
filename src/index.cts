@@ -367,7 +367,8 @@ class NodeProvider implements Provider {
 }
 
 class NodeKeyHandle implements KeyHandle {
-    private keyHandle: BareKeyHandle;
+    // Do not change this variable. The rust code needs to unwrap this `NodeKeyHandle` to a `BareKeyHandle` on provider creation.
+    public keyHandle: BareKeyHandle;
 
     constructor(bareKeyHandle: BareKeyHandle) {
         this.keyHandle = bareKeyHandle;
@@ -423,7 +424,8 @@ class NodeKeyHandle implements KeyHandle {
 }
 
 class NodeKeyPairHandle implements KeyPairHandle {
-    private keyPairHandle: BareKeyPairHandle;
+    // Do not change this variable. The rust code needs to unwrap this `NodeKeyPairHandle` to a `BareKeyPairHandle` on provider creation.
+    public keyPairHandle: BareKeyPairHandle;
 
     constructor(bareKeyPairHandle: BareKeyPairHandle) {
         this.keyPairHandle = bareKeyPairHandle;

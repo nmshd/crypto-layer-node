@@ -11,6 +11,7 @@ import {
 import { createProviderFromName } from "../lib/index.cjs";
 
 import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+import { assertKeyHandle } from "@nmshd/rs-crypto-types/checks";
 
 describe("test provider methods", () => {
     const PROVIDER_DB_DIR_PATH = DB_DIR_PATH + "/provider";
@@ -18,7 +19,6 @@ describe("test provider methods", () => {
     const providerImplConfigWithFileStore: ProviderImplConfig = {
         additional_config: [
             { FileStoreConfig: { db_dir: PROVIDER_DB_DIR_PATH } },
-            { StorageConfigPass: "1234" },
         ],
     };
 
@@ -273,8 +273,8 @@ describe("test provider methods", () => {
 
         const kdf: KDF = {
             Argon2d: {
-                memory: 19456,
-                iterations: 2,
+                memory: 8192,
+                iterations: 1,
                 parallelism: 1,
             },
         };
@@ -287,8 +287,7 @@ describe("test provider methods", () => {
             spec,
             kdf,
         );
-        expect(keyHandle).toBeDefined();
-        expect(keyHandle.spec).toBeDefined();
+        assertKeyHandle(keyHandle);
         expect(keyHandle.spec()).resolves.toEqual(spec);
     });
 

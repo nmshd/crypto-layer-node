@@ -15,7 +15,6 @@ describe("test key pair handle methods", () => {
     const providerImplConfigWithFileStore: ProviderImplConfig = {
         additional_config: [
             { FileStoreConfig: { db_dir: KEY_HANDLE_DB_DIR_PATH } },
-            { StorageConfigPass: "1234" },
         ],
     };
 
