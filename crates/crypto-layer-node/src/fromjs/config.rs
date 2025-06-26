@@ -132,14 +132,14 @@ pub fn from_wrapped_additional_config(
 
             let key_handle = rw_lock_poisoned(key_handle_js.read())?;
 
-            AdditionalConfig::StorageConfigHMAC(key_handle.clone())
+            AdditionalConfig::StorageConfigSymmetricEncryption(key_handle.clone())
         }
         AdditionalConfigDiscriminants::StorageConfigAsymmetricEncryption => {
             let key_pair_handle_js = boxed_key_pair_handle_from_node_key_pair_handle(cx, obj)?;
 
             let key_pair_handle = rw_lock_poisoned(key_pair_handle_js.read())?;
 
-            AdditionalConfig::StorageConfigDSA(key_pair_handle.clone())
+            AdditionalConfig::StorageConfigAsymmetricEncryption(key_pair_handle.clone())
         }
     };
 
