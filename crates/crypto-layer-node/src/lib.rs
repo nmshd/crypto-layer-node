@@ -23,8 +23,10 @@ use fromjs::*;
 use tojs::config::wrap_provider_config;
 use tojs::*;
 
-type JsKeyHandle = JsBox<Arc<RwLock<Finalized<KeyHandle>>>>;
-type JsKeyPairHandle = JsBox<Arc<RwLock<Finalized<KeyPairHandle>>>>;
+type BoxedKeyHandle = Arc<RwLock<Finalized<KeyHandle>>>;
+type JsKeyHandle = JsBox<BoxedKeyHandle>;
+type BoxedKeyPairHandle = Arc<RwLock<Finalized<KeyPairHandle>>>;
+type JsKeyPairHandle = JsBox<BoxedKeyPairHandle>;
 type JsProvider = JsBox<Arc<RwLock<Finalized<Provider>>>>;
 type JsDhExchange = JsBox<Arc<RwLock<Finalized<DHExchange>>>>;
 

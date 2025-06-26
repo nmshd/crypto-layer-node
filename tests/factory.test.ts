@@ -1,6 +1,11 @@
 import { test, expect, describe } from "@jest/globals";
 
-import { ProviderConfig, ProviderImplConfig } from "@nmshd/rs-crypto-types";
+import {
+    KeyPairSpec,
+    KeySpec,
+    ProviderConfig,
+    ProviderImplConfig,
+} from "@nmshd/rs-crypto-types";
 import {
     createProvider,
     getAllProviders,
@@ -8,11 +13,14 @@ import {
     getProviderCapabilities,
 } from "../lib/index.cjs";
 
-import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
+import {
+    assertKeyHandle,
+    assertProvider,
+    assertProviderConfig,
+} from "@nmshd/rs-crypto-types/checks";
 
 describe("test provider factory methods", () => {
-    const FACTORY_DB_DIR_PATH = DB_DIR_PATH + "/factory";
-
     const providerConfig: ProviderConfig = {
         max_security_level: "Software",
         min_security_level: "Software",
@@ -32,55 +40,43 @@ describe("test provider factory methods", () => {
     });
 
     test("create provider from config with file store", async () => {
+        const { path, cleanup } = await testDir();
         const providerImplConfigWithFileStore: ProviderImplConfig = {
-            additional_config: [
-                { FileStoreConfig: { db_dir: FACTORY_DB_DIR_PATH } },
-                { StorageConfigPass: "1234" },
-            ],
+            additional_config: [{ FileStoreConfig: { db_dir: path } }],
         };
         const provider = await createProvider(
             providerConfig,
             providerImplConfigWithFileStore,
         );
-        expect(provider).toBeDefined();
-        expect(typeof provider?.createKey).toBe("function");
-        expect(typeof provider?.createKeyPair).toBe("function");
-        expect(typeof provider?.getCapabilities).toBe("function");
-        expect(typeof provider?.importKey).toBe("function");
-        expect(typeof provider?.importKeyPair).toBe("function");
-        expect(typeof provider?.importPublicKey).toBe("function");
-        expect(typeof provider?.loadKey).toBe("function");
-        expect(typeof provider?.loadKeyPair).toBe("function");
-        expect(typeof provider?.providerName).toBe("function");
-        expect(typeof provider?.startEphemeralDhExchange).toBe("function");
+
+        assertProvider(provider);
+        expect(provider?.providerName()).resolves.toEqual(
+            SOFTWARE_PROVIDER_NAME,
+        );
+        await cleanup();
     });
 
     test("create software provider from name with file store", async () => {
+        const { path, cleanup } = await testDir();
         const providerImplConfigWithFileStore: ProviderImplConfig = {
             additional_config: [
                 {
                     FileStoreConfig: {
-                        db_dir: FACTORY_DB_DIR_PATH + "FromName",
+                        db_dir: path,
                     },
                 },
-                { StorageConfigPass: "1234" },
             ],
         };
         const provider = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             providerImplConfigWithFileStore,
         );
-        expect(provider).toBeDefined();
-        expect(typeof provider?.createKey).toBe("function");
-        expect(typeof provider?.createKeyPair).toBe("function");
-        expect(typeof provider?.getCapabilities).toBe("function");
-        expect(typeof provider?.importKey).toBe("function");
-        expect(typeof provider?.importKeyPair).toBe("function");
-        expect(typeof provider?.importPublicKey).toBe("function");
-        expect(typeof provider?.loadKey).toBe("function");
-        expect(typeof provider?.loadKeyPair).toBe("function");
-        expect(typeof provider?.providerName).toBe("function");
-        expect(typeof provider?.startEphemeralDhExchange).toBe("function");
+
+        assertProvider(provider);
+        expect(provider?.providerName()).resolves.toEqual(
+            SOFTWARE_PROVIDER_NAME,
+        );
+        await cleanup();
     });
 
     test("test get provider capabilities", async () => {
@@ -95,24 +91,139 @@ describe("test provider factory methods", () => {
         for (const [name, caps] of providerCapsList) {
             expect(typeof name).toEqual("string");
             expect(name).toBeTruthy();
-            expect(caps).toBeDefined();
-            expect(typeof caps.max_security_level).toEqual("string");
-            expect(typeof caps.min_security_level).toEqual("string");
-            expect(Array.isArray(caps.supported_asym_spec)).toEqual(true);
-            for (const item of caps.supported_asym_spec) {
-                expect(typeof item).toEqual("string");
-                expect(item).toBeTruthy();
-            }
-            expect(Array.isArray(caps.supported_ciphers)).toEqual(true);
-            for (const item of caps.supported_ciphers) {
-                expect(typeof item).toEqual("string");
-                expect(item).toBeTruthy();
-            }
-            expect(Array.isArray(caps.supported_hashes)).toEqual(true);
-            for (const item of caps.supported_hashes) {
-                expect(typeof item).toEqual("string");
-                expect(item).toBeTruthy();
-            }
+            assertProviderConfig(caps);
         }
+    });
+
+    test("create software provider secured via a key handle", async () => {
+        const { path, cleanup } = await testDir();
+
+        const temporaryProviderConfig: ProviderImplConfig = {
+            additional_config: [],
+        };
+        const temporaryProvider = await createProviderFromName(
+            SOFTWARE_PROVIDER_NAME,
+            temporaryProviderConfig,
+        );
+
+        if (!temporaryProvider)
+            throw new Error("Failed creating an ephemeral software provider.");
+
+        const keySpecMasterKey: KeySpec = {
+            cipher: "AesGcm256",
+            signing_hash: "Sha2_512",
+            ephemeral: true,
+            non_exportable: true,
+        };
+        const masterKey = await temporaryProvider.createKey(keySpecMasterKey);
+
+        const securedAdditionalConfig: ProviderImplConfig = {
+            additional_config: [
+                { StorageConfigHMAC: masterKey },
+                { StorageConfigSymmetricEncryption: masterKey },
+                {
+                    FileStoreConfig: {
+                        db_dir: path,
+                    },
+                },
+            ],
+        };
+        const securedProvider = await createProviderFromName(
+            SOFTWARE_PROVIDER_NAME,
+            securedAdditionalConfig,
+        );
+
+        if (!securedProvider)
+            throw new Error("Failed creating a secured software provider.");
+
+        assertProvider(securedProvider);
+
+        const keySpecSecureProvider: KeySpec = {
+            cipher: "AesGcm256",
+            signing_hash: "Sha2_512",
+            ephemeral: false,
+            non_exportable: true,
+        };
+        let id: string;
+        {
+            const keyHandle = await securedProvider.createKey(
+                keySpecSecureProvider,
+            );
+            assertKeyHandle(keyHandle);
+            id = await keyHandle.id();
+        }
+        {
+            const keyHandle = await securedProvider.loadKey(id);
+            assertKeyHandle(keyHandle);
+        }
+
+        await cleanup();
+    });
+
+    test("create software provider validated through a key pair handle", async () => {
+        const { path, cleanup } = await testDir();
+
+        const temporaryProviderConfig: ProviderImplConfig = {
+            additional_config: [],
+        };
+        const temporaryProvider = await createProviderFromName(
+            SOFTWARE_PROVIDER_NAME,
+            temporaryProviderConfig,
+        );
+
+        if (!temporaryProvider)
+            throw new Error("Failed creating an ephemeral software provider.");
+
+        const keyPairSpecMasterKey: KeyPairSpec = {
+            asym_spec: "P256",
+            cipher: null,
+            signing_hash: "Sha2_512",
+            ephemeral: true,
+            non_exportable: true,
+        };
+
+        const signingKey =
+            await temporaryProvider.createKeyPair(keyPairSpecMasterKey);
+
+        const securedAdditionalConfig: ProviderImplConfig = {
+            additional_config: [
+                { StorageConfigDSA: signingKey },
+                {
+                    FileStoreConfig: {
+                        db_dir: path,
+                    },
+                },
+            ],
+        };
+        const securedProvider = await createProviderFromName(
+            SOFTWARE_PROVIDER_NAME,
+            securedAdditionalConfig,
+        );
+
+        if (!securedProvider)
+            throw new Error("Failed creating a secured software provider.");
+
+        assertProvider(securedProvider);
+
+        const keySpecSecureProvider: KeySpec = {
+            cipher: "AesGcm256",
+            signing_hash: "Sha2_512",
+            ephemeral: false,
+            non_exportable: true,
+        };
+        let id: string;
+        {
+            const keyHandle = await securedProvider.createKey(
+                keySpecSecureProvider,
+            );
+            assertKeyHandle(keyHandle);
+            id = await keyHandle.id();
+        }
+        {
+            const keyHandle = await securedProvider.loadKey(id);
+            assertKeyHandle(keyHandle);
+        }
+
+        await cleanup();
     });
 });

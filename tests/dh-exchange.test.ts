@@ -8,7 +8,7 @@ import {
 } from "@nmshd/rs-crypto-types";
 import { createProviderFromName } from "../lib/index.cjs";
 
-import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
 
 function checkIfKeySpecIsDerivedFromKeyPairSpec(
     keySpec: KeySpec,
@@ -20,17 +20,17 @@ function checkIfKeySpecIsDerivedFromKeyPairSpec(
 }
 
 describe("test dh exchange", () => {
-    const KEY_HANDLE_DB_DIR_PATH = DB_DIR_PATH + "/dh_exchange";
-
-    const providerImplConfigWithFileStore: ProviderImplConfig = {
-        additional_config: [
-            { FileStoreConfig: { db_dir: KEY_HANDLE_DB_DIR_PATH } },
-            { StorageConfigPass: "1234" },
-        ],
-    };
-
     let provider: Provider;
+    let cleanup: () => Promise<void>;
+    let path: string;
+
     beforeAll(async () => {
+        const folder = await testDir();
+        path = folder.path;
+        cleanup = folder.cleanup;
+        const providerImplConfigWithFileStore: ProviderImplConfig = {
+            additional_config: [{ FileStoreConfig: { db_dir: path } }],
+        };
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             providerImplConfigWithFileStore,
@@ -39,6 +39,10 @@ describe("test dh exchange", () => {
             throw Error("Failed initializing simple software provider.");
         }
         provider = provider_or_null;
+    });
+
+    afterAll(async () => {
+        if (cleanup) await cleanup();
     });
 
     const spec: KeyPairSpec = {

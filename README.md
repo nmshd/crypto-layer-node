@@ -48,6 +48,10 @@ This command uses the [@neon-rs/cli](https://www.npmjs.com/package/@neon-rs/cli)
 
     It is possible to filter according to modules (see the [docs](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html)).
 
+    ```pwsh
+    $env:RUST_LOG="crypto_layer_node=trace,crypto_layer=warn"
+    ```
+
 - Activate full backtrace:
 
     ```bash
