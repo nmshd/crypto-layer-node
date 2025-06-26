@@ -10,20 +10,21 @@ import {
 
 import { createProviderFromName } from "../lib/index.cjs";
 
-import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
 import { assertKeyHandle } from "@nmshd/rs-crypto-types/checks";
 
 describe("test provider methods", () => {
-    const PROVIDER_DB_DIR_PATH = DB_DIR_PATH + "/provider";
-
-    const providerImplConfigWithFileStore: ProviderImplConfig = {
-        additional_config: [
-            { FileStoreConfig: { db_dir: PROVIDER_DB_DIR_PATH } },
-        ],
-    };
-
     let provider: Provider;
+    let cleanup: () => Promise<void>;
+    let path: string;
+
     beforeAll(async () => {
+        const folder = await testDir();
+        path = folder.path;
+        cleanup = folder.cleanup;
+        const providerImplConfigWithFileStore: ProviderImplConfig = {
+            additional_config: [{ FileStoreConfig: { db_dir: path } }],
+        };
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             providerImplConfigWithFileStore,
@@ -32,6 +33,10 @@ describe("test provider methods", () => {
             throw Error("Failed initializing simple software provider.");
         }
         provider = provider_or_null;
+    });
+
+    afterAll(async () => {
+        if (cleanup) await cleanup();
     });
 
     test("create aes gcm ephemeral key", async () => {
@@ -306,4 +311,4 @@ describe("test provider methods", () => {
         expect(hash.length).toBeGreaterThan(0);
         expect(hash).toEqual(hash2);
     });
-});
+}); // end describe

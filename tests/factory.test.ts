@@ -1,6 +1,7 @@
 import { test, expect, describe } from "@jest/globals";
 
 import {
+    KeyPairSpec,
     KeySpec,
     ProviderConfig,
     ProviderImplConfig,
@@ -12,7 +13,7 @@ import {
     getProviderCapabilities,
 } from "../lib/index.cjs";
 
-import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
 import {
     assertKeyHandle,
     assertProvider,
@@ -20,8 +21,6 @@ import {
 } from "@nmshd/rs-crypto-types/checks";
 
 describe("test provider factory methods", () => {
-    const FACTORY_DB_DIR_PATH = DB_DIR_PATH + "/factory";
-
     const providerConfig: ProviderConfig = {
         max_security_level: "Software",
         min_security_level: "Software",
@@ -41,10 +40,9 @@ describe("test provider factory methods", () => {
     });
 
     test("create provider from config with file store", async () => {
+        const { path, cleanup } = await testDir();
         const providerImplConfigWithFileStore: ProviderImplConfig = {
-            additional_config: [
-                { FileStoreConfig: { db_dir: FACTORY_DB_DIR_PATH } },
-            ],
+            additional_config: [{ FileStoreConfig: { db_dir: path } }],
         };
         const provider = await createProvider(
             providerConfig,
@@ -55,14 +53,16 @@ describe("test provider factory methods", () => {
         expect(provider?.providerName()).resolves.toEqual(
             SOFTWARE_PROVIDER_NAME,
         );
+        await cleanup();
     });
 
     test("create software provider from name with file store", async () => {
+        const { path, cleanup } = await testDir();
         const providerImplConfigWithFileStore: ProviderImplConfig = {
             additional_config: [
                 {
                     FileStoreConfig: {
-                        db_dir: FACTORY_DB_DIR_PATH + "FromName",
+                        db_dir: path,
                     },
                 },
             ],
@@ -76,6 +76,7 @@ describe("test provider factory methods", () => {
         expect(provider?.providerName()).resolves.toEqual(
             SOFTWARE_PROVIDER_NAME,
         );
+        await cleanup();
     });
 
     test("test get provider capabilities", async () => {
@@ -95,6 +96,8 @@ describe("test provider factory methods", () => {
     });
 
     test("create software provider secured via a key handle", async () => {
+        const { path, cleanup } = await testDir();
+
         const temporaryProviderConfig: ProviderImplConfig = {
             additional_config: [],
         };
@@ -120,13 +123,11 @@ describe("test provider factory methods", () => {
                 { StorageConfigSymmetricEncryption: masterKey },
                 {
                     FileStoreConfig: {
-                        db_dir:
-                            FACTORY_DB_DIR_PATH + "securedProviderByKeyHandle",
+                        db_dir: path,
                     },
                 },
             ],
         };
-        console.log(securedAdditionalConfig);
         const securedProvider = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             securedAdditionalConfig,
@@ -155,9 +156,13 @@ describe("test provider factory methods", () => {
             const keyHandle = await securedProvider.loadKey(id);
             assertKeyHandle(keyHandle);
         }
+
+        await cleanup();
     });
 
-    /* test("create software provider validated through a key pair handle", async () => {
+    test("create software provider validated through a key pair handle", async () => {
+        const { path, cleanup } = await testDir();
+
         const temporaryProviderConfig: ProviderImplConfig = {
             additional_config: [],
         };
@@ -185,9 +190,7 @@ describe("test provider factory methods", () => {
                 { StorageConfigDSA: signingKey },
                 {
                     FileStoreConfig: {
-                        db_dir:
-                            FACTORY_DB_DIR_PATH +
-                            "securedProviderByKeyPairHandle",
+                        db_dir: path,
                     },
                 },
             ],
@@ -220,5 +223,7 @@ describe("test provider factory methods", () => {
             const keyHandle = await securedProvider.loadKey(id);
             assertKeyHandle(keyHandle);
         }
-    }); */
+
+        await cleanup();
+    });
 });

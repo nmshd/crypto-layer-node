@@ -7,19 +7,20 @@ import {
 } from "@nmshd/rs-crypto-types";
 import { createProviderFromName } from "../lib/index.cjs";
 
-import { DB_DIR_PATH, SOFTWARE_PROVIDER_NAME } from "./common";
+import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
 
 describe("test key pair handle methods", () => {
-    const KEY_HANDLE_DB_DIR_PATH = DB_DIR_PATH + "/key_pair_handle";
-
-    const providerImplConfigWithFileStore: ProviderImplConfig = {
-        additional_config: [
-            { FileStoreConfig: { db_dir: KEY_HANDLE_DB_DIR_PATH } },
-        ],
-    };
-
     let provider: Provider;
+    let cleanup: () => Promise<void>;
+    let path: string;
+
     beforeAll(async () => {
+        const folder = await testDir();
+        path = folder.path;
+        cleanup = folder.cleanup;
+        const providerImplConfigWithFileStore: ProviderImplConfig = {
+            additional_config: [{ FileStoreConfig: { db_dir: path } }],
+        };
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
             providerImplConfigWithFileStore,
@@ -28,6 +29,13 @@ describe("test key pair handle methods", () => {
             throw Error("Failed initializing simple software provider.");
         }
         provider = provider_or_null;
+    });
+
+    afterAll(async () => {
+        if (cleanup) {
+            await cleanup();
+            console.log("cleanup comp");
+        }
     });
 
     const spec: KeyPairSpec = {

@@ -1,2 +1,9 @@
+import { dir, DirectoryResult } from "tmp-promise";
+
 export const SOFTWARE_PROVIDER_NAME = "SoftwareProvider";
-export const DB_DIR_PATH = "./tests/test_db";
+
+export async function testDir(): Promise<DirectoryResult> {
+    return await dir({
+        unsafeCleanup: true,
+    });
+}
