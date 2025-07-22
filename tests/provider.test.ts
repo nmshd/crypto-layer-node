@@ -11,7 +11,12 @@ import {
 import { createProviderFromName } from "../lib/index.cjs";
 
 import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
-import { assertKeyHandle } from "@nmshd/rs-crypto-types/checks";
+import {
+    assertKeyHandle,
+    assertSpec,
+    isKeyHandle,
+    isKeyPairHandle,
+} from "@nmshd/rs-crypto-types/checks";
 
 describe("test provider methods", () => {
     let provider: Provider;
@@ -310,5 +315,34 @@ describe("test provider methods", () => {
         expect(hash).toBeInstanceOf(Uint8Array);
         expect(hash.length).toBeGreaterThan(0);
         expect(hash).toEqual(hash2);
+    });
+
+    test("get all keys", async () => {
+        const keys = await provider.getAllKeys();
+
+        expect(Array.isArray(keys)).toBe(true);
+        expect(keys.length).toBeGreaterThan(0);
+
+        for (const [id, spec] of keys) {
+            expect(typeof id).toBe("string");
+            expect(id.length).toBeGreaterThan(0);
+            assertSpec(spec);
+        }
+
+        const loadedKeys = await Promise.all(
+            keys.map(([id, spec]) => {
+                if ("KeySpec" in spec) {
+                    return provider.loadKey(id);
+                } else if ("KeyPairSpec" in spec) {
+                    return provider.loadKeyPair(id);
+                } else {
+                    throw new Error("Spec does not hold key or key pair spec.");
+                }
+            }),
+        );
+
+        for (const key of loadedKeys) {
+            expect(isKeyHandle(key) || isKeyPairHandle(key)).toBe(true);
+        }
     });
 }); // end describe

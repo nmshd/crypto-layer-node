@@ -14,6 +14,7 @@ import type {
     DHExchange,
     KDF,
     CryptoHash,
+    Spec,
 } from "@nmshd/rs-crypto-types";
 
 import {
@@ -60,6 +61,7 @@ import {
     deriveKeyForKeyHandle,
     encryptForKeyHandle,
     encryptWithIvForKeyHandle,
+    getAllKeys,
 } from "./load.cjs";
 
 type BareProvider = object;
@@ -150,6 +152,7 @@ declare module "./load.cjs" {
         input: Uint8Array,
         hash: CryptoHash,
     ): Promise<Uint8Array>;
+    function getAllKeys(): Promise<[string, Spec][]>;
 
     // KeyPairHandle
     function signData(
@@ -362,7 +365,11 @@ class NodeProvider implements Provider {
     }
 
     async hash(input: Uint8Array, hashAlgo: CryptoHash): Promise<Uint8Array> {
-        return hash.call(this.provider, input, hashAlgo);
+        return await hash.call(this.provider, input, hashAlgo);
+    }
+
+    async getAllKeys(): Promise<[string, Spec][]> {
+        return await getAllKeys.call(this.provider);
     }
 }
 

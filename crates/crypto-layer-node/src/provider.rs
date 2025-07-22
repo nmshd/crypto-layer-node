@@ -5,8 +5,8 @@ use crate::common::{arc_or_poisoned_error_deferred, box_if_ok, spawn_promise};
 use crate::fromjs::error::unwrap_or_throw;
 use crate::fromjs::{from_wrapped_simple_enum, int_from_js_number, vec_from_uint_8_array};
 use crate::kdf::kdf_from_object;
-use crate::tojs::config::wrap_provider_config;
-use crate::tojs::uint_8_array_from_vec_u8;
+use crate::tojs::config::{wrap_provider_config, wrap_spec};
+use crate::tojs::{js_array_from_vec, uint_8_array_from_vec_u8};
 use crate::JsProvider;
 use crate::{from_wrapped_key_pair_spec, from_wrapped_key_spec};
 
@@ -433,6 +433,38 @@ pub fn export_hash(mut cx: FunctionContext) -> JsResult<JsPromise> {
         deferred.settle_with(&channel, |mut cx| {
             let hash = unwrap_or_throw!(cx, hash);
             uint_8_array_from_vec_u8(&mut cx, hash)
+        });
+    })
+}
+
+/// Wraps `get_all_keys` function.
+///
+/// # Arguments
+///
+/// # Returns
+/// * `[string, Spec][]` - list of key id and key spec
+///
+/// # Throws
+pub fn export_get_all_keys(mut cx: FunctionContext) -> JsResult<JsPromise> {
+    let provider_arc = (**cx.this::<JsProvider>()?).clone();
+
+    spawn_promise(&mut cx, move |channel, deferred| {
+        let provider = arc_or_poisoned_error_deferred!(&channel, deferred, provider_arc.read());
+
+        let keys_result = provider.get_all_keys();
+
+        deferred.settle_with(&channel, |mut cx| {
+            let keys = unwrap_or_throw!(cx, keys_result);
+            js_array_from_vec(&mut cx, keys, |cx, (id, spec)| {
+                let spec_js = wrap_spec(cx, spec)?;
+                let id_js = JsString::new(cx, id);
+
+                let result = JsArray::new(cx, 2);
+                result.prop(cx, 0).set(id_js)?;
+                result.prop(cx, 1).set(spec_js)?;
+
+                Ok(result.upcast())
+            })
         });
     })
 }

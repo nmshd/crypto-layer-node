@@ -1,4 +1,4 @@
-use crypto_layer::prelude::*;
+use crypto_layer::{common::config::Spec, prelude::*};
 use neon::prelude::*;
 
 use super::wrap_string_array;
@@ -103,4 +103,21 @@ pub fn wrap_key_pair_spec<'a>(
     }
 
     Ok(obj)
+}
+
+pub fn wrap_spec<'a>(cx: &mut impl Context<'a>, spec: Spec) -> JsResult<'a, JsObject> {
+    let obj = cx.empty_object();
+
+    match spec {
+        Spec::KeyPairSpec(key_pair_spec) => {
+            let key_pair_spec_js = wrap_key_pair_spec(cx, key_pair_spec)?;
+            obj.set(cx, "KeyPairSpec", key_pair_spec_js)?;
+        }
+        Spec::KeySpec(key_spec) => {
+            let key_spec_js = wrap_key_spec(cx, key_spec)?;
+            obj.set(cx, "KeySpec", key_spec_js)?;
+        }
+    }
+
+    return Ok(obj);
 }

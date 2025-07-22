@@ -192,6 +192,7 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
     )?;
     cx.export_function("getRandom", crate::provider::export_get_random)?;
     cx.export_function("hash", crate::provider::export_hash)?;
+    cx.export_function("getAllKeys", crate::provider::export_get_all_keys)?;
 
     // key pair handle
     cx.export_function("signData", crate::keypairhandle::export_sign_data)?;
