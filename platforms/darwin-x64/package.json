@@ -2,7 +2,7 @@
     "name": "@nmshd/rs-crypto-node-darwin-x64",
     "description": "Prebuilt binary package for `rs-layer-ts` on `darwin-x64`.",
     "repository": "github:nmshd/crypto-layer-node",
-    "version": "0.14.0",
+    "version": "0.15.0",
     "os": [
         "darwin"
     ],
