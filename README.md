@@ -144,11 +144,18 @@ node-plugin/
 1. Switch to another branch. (`main` is protected.)
 2. **Bump the package version:**
     Multiple packages need to be bumped to the same version.
-    For this purpose there exists a [bun](https://bun.sh/) script which does this automatically.
-    ```sh
-    # major, minor and patch are acceptable parameters:
-    bun run ./scripts/update-version.bun.ts minor
-    ```
+    For this purpose there exist [node](https://nodejs.org/en) and [bun](https://bun.sh/) scripts which do this automatically:
+    * **node**:
+        ```sh
+        npm run bump:patch
+        npm run bump:minor
+        npm run bump:major
+        ```
+    * **bun**:
+        ```sh
+        # major, minor and patch are acceptable parameters:
+        bun run ./scripts/update-version.bun.ts minor
+        ```
 3. Open a PR and merge the branch into `main`.
 4. Switch to `main` and fetch the new commit.
 5. **Tag the commit correctly.**
@@ -164,6 +171,15 @@ node-plugin/
     git checkout main
     git pull
     $CAL_NODE_VERSION = rg '^.*\"version\"\:\s*\"(?<version>[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,})\".*$' .\package.json -r '$version'
+    git tag -s "v$CAL_NODE_VERSION"
+    git push origin "v$CAL_NODE_VERSION"
+    ```
+
+    Or on bash:
+    ```bash
+    git checkout main
+    git pull
+    CAL_NODE_VERSION=$(grep -o '"version": "[0-9]\+\.[0-9]\+\.[0-9]\+"' package.json | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
     git tag -s "v$CAL_NODE_VERSION"
     git push origin "v$CAL_NODE_VERSION"
     ```
