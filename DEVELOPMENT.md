@@ -130,7 +130,7 @@ node-plugin/
 
 ## Creating a New Release
 
-1. Switch to another branch. (`main` is protected.)
+1. Be on another branch. (`main` is protected.)
 2. **Bump the package version:**
     Multiple packages need to be bumped to the same version.
     For this purpose there exist [node](https://nodejs.org/en) and [bun](https://bun.sh/) scripts which do this automatically:
