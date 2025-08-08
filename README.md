@@ -2,14 +2,10 @@
 
 [![NPM Version](https://img.shields.io/npm/v/%40nmshd%2Frs-crypto-node)](https://www.npmjs.com/package/@nmshd/rs-crypto-node)
 
-> [!WARNING]
-> Currently this node plugin crashes quite ungracefully. (See [#Debugging])
-
-> [!WARNING]
-> File storage works with fs locks and closing is sluggish.
-> Closing and reopening a provider with the same file store might result in an db lock error.
-
 **Crypto Layer TS interface for nodejs.**
+
+> [!WARNING]
+> Currently crypto-layer errors are not correctly mapped to javascript errors. (See [#Debugging])
 
 This project was bootstrapped by [create-neon](https://www.npmjs.com/package/create-neon).
 
@@ -84,21 +80,19 @@ Similar to `npm run build` but generates a debug build with `cargo`.
 
 Similar to `npm run build` but uses [cross-rs](https://github.com/cross-rs/cross) to cross-compile for another platform. Use the [`CARGO_BUILD_TARGET`](https://doc.rust-lang.org/cargo/reference/config.html#buildtarget) environment variable to select the build target.
 
-#### `npm run release`
-
-Initiate a full build and publication of a new patch release of this library via GitHub Actions.
-
-#### `npm run dryrun`
-
-Initiate a dry run of a patch release of this library via GitHub Actions. This performs a full build but does not publish the final result.
-
-#### `npm test`
+#### `npm run test`
 
 Runs the unit tests written with `jest`.
 
 The project must be compiled with `npm run debug` (recommended) or `npm run build` beforehand.
 
 Consider running the tests with logging and full backtrace:
+
+```pwsh
+$RUST_LOG="info"
+$RUST_BACKTRACE="full"
+npm test
+```
 
 ```bash
 RUST_LOG=info RUST_BACKTRACE=full npm test
