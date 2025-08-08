@@ -1,13 +1,8 @@
-# cal-node-example
+# `crypto-layer-node` Example
 
-To install dependencies:
+Install dependencies and run the example (be sure to compile the nodejs addon beforehand):
 
-```bash
+```sh
 npm i
-```
-
-To run:
-
-```bash
 npm run tests
 ```
