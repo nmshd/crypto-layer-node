@@ -2,7 +2,11 @@
 
 [![NPM Version](https://img.shields.io/npm/v/%40nmshd%2Frs-crypto-node)](https://www.npmjs.com/package/@nmshd/rs-crypto-node)
 
-**Crypto Layer TS interface for nodejs.**
+**Node.js Addon providing TypeScript bindings for `rust-crypto` / `crypto-layer`.**
+
+This is a Node.js Addon built with [Neon](https://github.com/neon-bindings) that implements 
+the TypeScript bindings for [`rust-crypto` / `crypto-layer`](https://github.com/nmshd/rust-crypto).
+The TypeScript interface definitions are provided by the [`@nmshd/rs-crypto-types`](https://github.com/nmshd/rust-crypto/tree/main/ts-types) package.
 
 > [!WARNING]
 > Currently crypto-layer errors are not correctly mapped to javascript errors. (See [#Debugging])
