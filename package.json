@@ -20,7 +20,10 @@
     "version": "neon bump --binaries platforms && git add .",
     "release": "gh workflow run release.yml -f dryrun=false -f version=patch",
     "dryrun": "gh workflow run publish.yml -f dryrun=true",
-    "format": "prettier src/ --write && prettier tests/ --write"
+    "format": "prettier src/ --write && prettier tests/ --write",
+    "bump:patch": "node scripts/update-version.node.mjs patch",
+    "bump:minor": "node scripts/update-version.node.mjs minor",
+    "bump:major": "node scripts/update-version.node.mjs major"
   },
   "exports": {
     ".": {
