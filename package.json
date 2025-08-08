@@ -21,7 +21,8 @@
     "version": "neon bump --binaries platforms && git add .",
     "bump:patch": "node scripts/update-version.node.mjs patch",
     "bump:minor": "node scripts/update-version.node.mjs minor",
-    "bump:major": "node scripts/update-version.node.mjs major"
+    "bump:major": "node scripts/update-version.node.mjs major",
+    "update": "cargo update && npm update"
   },
   "exports": {
     ".": {

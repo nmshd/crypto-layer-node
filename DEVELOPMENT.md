@@ -93,6 +93,10 @@ RUST_LOG=info RUST_BACKTRACE=full npm test
 
 Bump the version of this package and the versions of the subpackages.
 
+#### `npm run update`
+
+Update rust and npm dependencies.
+
 ## Project Layout
 
 The directory structure of this project is:
