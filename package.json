@@ -72,5 +72,8 @@
     "@nmshd/rs-crypto-node-darwin-x64": "0.15.0",
     "@nmshd/rs-crypto-node-linux-x64-gnu": "0.15.0",
     "@nmshd/rs-crypto-node-win32-x64-msvc": "0.15.0"
+  },
+  "overrides": {
+    "tmp": "^0.2.4"
   }
 }
