@@ -7,19 +7,22 @@ import {
 } from "@nmshd/rs-crypto-types";
 import { createProviderFromName } from "../lib/index.cjs";
 
-import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
+import {
+    gcAllAndWait,
+    setupDbDir,
+    SOFTWARE_PROVIDER_NAME,
+    teardownDbDir,
+} from "./common";
 
 describe("test key pair handle methods", () => {
     let provider: Provider;
-    let cleanup: () => Promise<void>;
-    let path: string;
+    let dbDirPath: string;
 
     beforeAll(async () => {
-        const folder = await testDir();
-        path = folder.path;
-        cleanup = folder.cleanup;
+        dbDirPath = await setupDbDir();
+
         const providerImplConfigWithFileStore: ProviderImplConfig = {
-            additional_config: [{ FileStoreConfig: { db_dir: path } }],
+            additional_config: [{ FileStoreConfig: { db_dir: dbDirPath } }],
         };
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
@@ -32,10 +35,9 @@ describe("test key pair handle methods", () => {
     });
 
     afterAll(async () => {
-        if (cleanup) {
-            await cleanup();
-            console.log("cleanup comp");
-        }
+        (provider as unknown) = null;
+        await gcAllAndWait();
+        teardownDbDir(dbDirPath);
     });
 
     const spec: KeyPairSpec = {

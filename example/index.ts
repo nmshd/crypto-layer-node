@@ -9,7 +9,7 @@ import { exit } from "process";
 
 console.log("Providers: ", getAllProviders());
 
-let providerConfig: ProviderConfig = {
+const providerConfig: ProviderConfig = {
     max_security_level: "Software",
     min_security_level: "Software",
     supported_asym_spec: ["P256"],
@@ -17,14 +17,13 @@ let providerConfig: ProviderConfig = {
     supported_hashes: ["Sha2_256", "Sha2_384"],
 };
 
-let providerImplConfig: ProviderImplConfig = {
+const providerImplConfig: ProviderImplConfig = {
     additional_config: [
         { FileStoreConfig: { db_dir: "./db" } },
-        { StorageConfigPass: "1234" },
     ],
 };
 
-let provider = await createProvider(providerConfig, providerImplConfig);
+const provider = await createProvider(providerConfig, providerImplConfig);
 
 if (!provider) {
     console.log("Failed creating provider.");
@@ -34,7 +33,7 @@ if (!provider) {
 console.log("Provider initialized: ", await provider.providerName());
 console.log("Capabilities: ", await provider.getCapabilities());
 
-let keypairspec: KeyPairSpec = {
+const keyPairSpec: KeyPairSpec = {
     asym_spec: "P256",
     cipher: null,
     signing_hash: "Sha2_224",
@@ -44,22 +43,22 @@ let keypairspec: KeyPairSpec = {
 
 console.log("Creating KeyPair");
 
-let keypair = (await provider.createKeyPair(keypairspec)) as KeyPairHandle;
+const keyPair = (await provider.createKeyPair(keyPairSpec)) as KeyPairHandle;
 
 console.log("Created KeyPair");
 
-let data = Uint8Array.from([1, 2, 3, 4]);
+const data = Uint8Array.from([1, 2, 3, 4]);
 
 console.log("Data: ", data);
 
-let signature = await keypair.signData(data);
+const signature = await keyPair.signData(data);
 
 console.log("Signature: ", signature);
 
 try {
     console.log(
         "Verified: ",
-        (await keypair.verifySignature(data, signature)) ? "OK" : "FAILURE",
+        (await keyPair.verifySignature(data, signature)) ? "OK" : "FAILURE",
     );
 } catch (e) {
     console.log("Error while verifying:\n", e);

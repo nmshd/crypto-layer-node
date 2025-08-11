@@ -12,7 +12,7 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@nmshd/rs-crypto-types": "^0.1.0",
+        "@nmshd/rs-crypto-types": "*",
         "crypto-layer-node": "file:.."
     }
 }
