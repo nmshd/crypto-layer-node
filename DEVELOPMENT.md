@@ -161,8 +161,6 @@ node-plugin/
 
     If you are on powershell and have [ripgrep](https://github.com/BurntSushi/ripgrep) installed:   
     ```pwsh
-    git checkout main
-    git pull
     $CAL_NODE_VERSION = rg '^.*\"version\"\:\s*\"(?<version>[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,})\".*$' .\package.json -r '$version'
     git tag -s "v$CAL_NODE_VERSION"
     git push origin "v$CAL_NODE_VERSION"
@@ -170,8 +168,6 @@ node-plugin/
 
     Or on bash:
     ```bash
-    git checkout main
-    git pull
     CAL_NODE_VERSION=$(grep -o '"version": "[0-9]\+\.[0-9]\+\.[0-9]\+"' package.json | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
     git tag -s "v$CAL_NODE_VERSION"
     git push origin "v$CAL_NODE_VERSION"
