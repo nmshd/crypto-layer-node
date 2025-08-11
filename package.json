@@ -19,9 +19,9 @@
     "prepack": "tsc &&neon update",
     "format": "prettier src/ --write && prettier tests/ --write",
     "version": "neon bump --binaries platforms && git add .",
-    "bump:patch": "node scripts/update-version.node.mjs patch",
-    "bump:minor": "node scripts/update-version.node.mjs minor",
-    "bump:major": "node scripts/update-version.node.mjs major",
+    "bump:patch": "node scripts/update-version.node.mjs patch && npm update",
+    "bump:minor": "node scripts/update-version.node.mjs minor && npm update",
+    "bump:major": "node scripts/update-version.node.mjs major && npm update",
     "update": "cargo update && npm update"
   },
   "exports": {

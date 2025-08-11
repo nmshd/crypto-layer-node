@@ -148,6 +148,7 @@ node-plugin/
         ```sh
         # major, minor and patch are acceptable parameters:
         bun run ./scripts/update-version.bun.ts minor
+        npm update
         ```
 3. Open a PR and merge the branch into `main`.
 4. Switch to `main` and fetch the new commit.
