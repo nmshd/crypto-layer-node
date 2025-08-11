@@ -11,6 +11,11 @@ The TypeScript interface definitions are provided by the [`@nmshd/rs-crypto-type
 > [!WARNING]
 > Currently crypto-layer errors are not correctly mapped to javascript errors. (See [#Debugging])
 
+> [!WARNING]
+> The key metadata storage uses sqlite. This means multiple processes may use the same database.
+> But this also means that the file lock on a database is not released very fast.
+> Deleting a database might not be immediately possible after dropping a provider.
+
 > [!NOTE]
 > MacOS and IOS providers are currently not included, as they'd require the nodejs addon to be signed.
 
