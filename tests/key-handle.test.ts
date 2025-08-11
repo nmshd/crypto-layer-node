@@ -3,20 +3,23 @@ import { test, expect, describe } from "@jest/globals";
 import { ProviderImplConfig, Provider, KeySpec } from "@nmshd/rs-crypto-types";
 import { createProviderFromName } from "../lib/index.cjs";
 
-import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
+import {
+    gcAllAndWait,
+    setupDbDir,
+    SOFTWARE_PROVIDER_NAME,
+    teardownDbDir,
+} from "./common";
 import { assertKeyHandle } from "@nmshd/rs-crypto-types/checks";
 
 describe("test key handle methods", () => {
     let provider: Provider;
-    let cleanup: () => Promise<void>;
-    let path: string;
+    let dbDirPath: string;
 
     beforeAll(async () => {
-        const folder = await testDir();
-        path = folder.path;
-        cleanup = folder.cleanup;
+        dbDirPath = await setupDbDir();
+
         const providerImplConfigWithFileStore: ProviderImplConfig = {
-            additional_config: [{ FileStoreConfig: { db_dir: path } }],
+            additional_config: [{ FileStoreConfig: { db_dir: dbDirPath } }],
         };
         const provider_or_null = await createProviderFromName(
             SOFTWARE_PROVIDER_NAME,
@@ -29,7 +32,9 @@ describe("test key handle methods", () => {
     });
 
     afterAll(async () => {
-        if (cleanup) await cleanup();
+        (provider as unknown) = null;
+        await gcAllAndWait();
+        teardownDbDir(dbDirPath);
     });
 
     const spec: KeySpec = {

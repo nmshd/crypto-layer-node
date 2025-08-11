@@ -8,7 +8,7 @@
   "author": "j&s-soft AG",
   "main": "./lib/index.cjs",
   "scripts": {
-    "test": "tsc &&jest",
+    "test": "tsc && npx --node-options=\"--expose-gc\" jest",
     "cargo-build": "tsc &&cargo build --message-format=json-render-diagnostics > cargo.log",
     "cross-build": "tsc &&cross build --message-format=json-render-diagnostics > cross.log",
     "postcargo-build": "neon dist --name crypto-layer-node < cargo.log",
@@ -58,7 +58,6 @@
     "jest": "^29.7.0",
     "jiti": "^2.4.2",
     "prettier": "3.5.3",
-    "tmp-promise": "^3.0.3",
     "ts-jest": "^29.2.5",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.25.0"

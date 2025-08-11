@@ -13,7 +13,12 @@ import {
     getProviderCapabilities,
 } from "../lib/index.cjs";
 
-import { SOFTWARE_PROVIDER_NAME, testDir } from "./common";
+import {
+    gcAllAndWait,
+    setupDbDir,
+    SOFTWARE_PROVIDER_NAME,
+    teardownDbDir,
+} from "./common";
 import {
     assertKeyHandle,
     assertProvider,
@@ -29,6 +34,25 @@ describe("test provider factory methods", () => {
         supported_hashes: ["Sha2_256"],
     };
 
+    let dbDirPath: string | undefined;
+
+    beforeEach(async () => {
+        dbDirPath = await setupDbDir();
+    });
+
+    const dbPathsToClean: string[] = [];
+
+    afterEach(() => {
+        dbPathsToClean.push(dbDirPath!);
+    });
+
+    afterAll(async () => {
+        await gcAllAndWait();
+        for (const dir of dbPathsToClean) {
+            teardownDbDir(dir);
+        }
+    });
+
     test("get provider names", async () => {
         const provider_arr = await getAllProviders();
         expect(provider_arr).toBeTruthy();
@@ -40,9 +64,8 @@ describe("test provider factory methods", () => {
     });
 
     test("create provider from config with file store", async () => {
-        const { path, cleanup } = await testDir();
         const providerImplConfigWithFileStore: ProviderImplConfig = {
-            additional_config: [{ FileStoreConfig: { db_dir: path } }],
+            additional_config: [{ FileStoreConfig: { db_dir: dbDirPath! } }],
         };
         const provider = await createProvider(
             providerConfig,
@@ -53,16 +76,14 @@ describe("test provider factory methods", () => {
         expect(provider?.providerName()).resolves.toEqual(
             SOFTWARE_PROVIDER_NAME,
         );
-        await cleanup();
     });
 
     test("create software provider from name with file store", async () => {
-        const { path, cleanup } = await testDir();
         const providerImplConfigWithFileStore: ProviderImplConfig = {
             additional_config: [
                 {
                     FileStoreConfig: {
-                        db_dir: path,
+                        db_dir: dbDirPath!,
                     },
                 },
             ],
@@ -76,7 +97,6 @@ describe("test provider factory methods", () => {
         expect(provider?.providerName()).resolves.toEqual(
             SOFTWARE_PROVIDER_NAME,
         );
-        await cleanup();
     });
 
     test("test get provider capabilities", async () => {
@@ -96,8 +116,6 @@ describe("test provider factory methods", () => {
     });
 
     test("create software provider secured via a key handle", async () => {
-        const { path, cleanup } = await testDir();
-
         const temporaryProviderConfig: ProviderImplConfig = {
             additional_config: [],
         };
@@ -123,7 +141,7 @@ describe("test provider factory methods", () => {
                 { StorageConfigSymmetricEncryption: masterKey },
                 {
                     FileStoreConfig: {
-                        db_dir: path,
+                        db_dir: dbDirPath!,
                     },
                 },
             ],
@@ -156,13 +174,9 @@ describe("test provider factory methods", () => {
             const keyHandle = await securedProvider.loadKey(id);
             assertKeyHandle(keyHandle);
         }
-
-        await cleanup();
     });
 
     test("create software provider validated through a key pair handle", async () => {
-        const { path, cleanup } = await testDir();
-
         const temporaryProviderConfig: ProviderImplConfig = {
             additional_config: [],
         };
@@ -190,7 +204,7 @@ describe("test provider factory methods", () => {
                 { StorageConfigDSA: signingKey },
                 {
                     FileStoreConfig: {
-                        db_dir: path,
+                        db_dir: dbDirPath!,
                     },
                 },
             ],
@@ -223,7 +237,5 @@ describe("test provider factory methods", () => {
             const keyHandle = await securedProvider.loadKey(id);
             assertKeyHandle(keyHandle);
         }
-
-        await cleanup();
     });
 });
