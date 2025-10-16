@@ -8,32 +8,8 @@ on:
             - "v*"
 
 jobs:
-    setup:
-        name: Setup
-        runs-on: ubuntu-latest
-        steps:
-            - id: publish
-              name: Validate Publish Event
-              shell: bash
-              env:
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-              run: |
-                  if [[ -z $NPM_TOKEN ]]; then
-                    echo "::error::Secret NPM_TOKEN is not defined for this GitHub repo."
-                    echo "::error::To publish to npm, this action requires:"
-                    echo "::error:: • an npm access token;"
-                    echo "::error:: • with Read-Write access to this project's npm packages;"
-                    echo "::error:: • stored as a repo secret named NPM_TOKEN."
-                    echo "::error::See https://docs.npmjs.com/about-access-tokens for info about creating npm tokens."
-                    echo "::error:: 💡 The simplest method is to create a Classic npm token of type Automation."
-                    echo "::error:: 💡 For greater security, consider using a Granual access token."
-                    echo "::error::See https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions for info about how to store GitHub repo secrets."
-                    exit 1
-                  fi
-
     build:
         name: Build
-        needs: [setup]
         permissions:
             contents: write
         uses: ./.github/workflows/build.yml
@@ -45,7 +21,7 @@ jobs:
 
     publish:
         name: Publish
-        needs: [setup, build]
+        needs: [build]
         runs-on: ubuntu-latest
         permissions:
             contents: write
@@ -65,8 +41,6 @@ jobs:
                   out-file-path: ./dist
             - name: Publish
               shell: bash
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
               run: |
                   for p in ./dist/*.tgz ; do
                     npm publish --provenance --access public $p
