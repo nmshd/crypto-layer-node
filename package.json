@@ -1,6 +1,6 @@
 {
   "name": "@nmshd/rs-crypto-node",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Node.js Addon providing TypeScript bindings for rust-crypto (crypto-layer).",
   "homepage": "https://enmeshed.eu",
   "repository": "github:nmshd/crypto-layer-node",
